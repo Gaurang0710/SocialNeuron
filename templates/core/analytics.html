@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics & Insights{% endblock %}
+
+{% block content %}
+<style>
+    .chart-container {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        margin-bottom: 2rem;
+    }
+</style>
+
+<div class="stats-grid">
+    <div class="card stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
+        <div class="stat-content">
+            <h3>Avg Engagement</h3>
+            <p>{{ avg_engagement }}%</p>
+        </div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h3>Content Performance Timeline</h3>
+    <p style="color: var(--text-secondary); margin-bottom:1rem;">Visual simulation of engagement over scheduled posts.</p>
+    <div style="height: 300px; display: flex; align-items: flex-end; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        <!-- Mock charts -->
+        <div style="width: 40px; height: 60%; background: var(--accent-color); border-radius: 4px;"></div>
+        <div style="width: 40px; height: 80%; background: var(--accent-color); border-radius: 4px;"></div>
+        <div style="width: 40px; height: 40%; background: var(--accent-color); border-radius: 4px;"></div>
+        <div style="width: 40px; height: 90%; background: var(--accent-color); border-radius: 4px;"></div>
+        <div style="width: 40px; height: 70%; background: var(--accent-color); border-radius: 4px;"></div>
+    </div>
+</div>
+{% endblock %}

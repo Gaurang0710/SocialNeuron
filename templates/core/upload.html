@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block title %}Excel Schedule Upload{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6 max-w-3xl mx-auto">
+
+    <!-- ═══ Hero Header ═══ -->
+    <div
+        class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#052e16] via-[#14532d] to-[#052e16] p-7 text-white shadow-2xl">
+        <div
+            class="pointer-events-none absolute -top-8 -right-8 w-56 h-56 bg-green-400 opacity-15 rounded-full blur-3xl">
+        </div>
+        <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-2">
+                <span
+                    class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                    <i class="fa-solid fa-file-excel text-green-400 text-[10px]"></i> Bulk Scheduling
+                </span>
+            </div>
+            <h1 class="text-3xl font-black tracking-tight">Upload Content Schedule</h1>
+            <p class="text-green-200 mt-1 text-sm max-w-md">Upload your Excel or CSV file — each row becomes a draft in
+                the AI pipeline, ready for generation and review.</p>
+        </div>
+    </div>
+
+    <!-- ═══ Upload Zone + Instructions ═══ -->
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-6">
+
+        <!-- Upload Form (3 cols) -->
+        <div class="sm:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col">
+            <h2 class="font-black text-gray-800 mb-5 flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-emerald-500"></i>
+                Upload Your File
+            </h2>
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+                <input type="file" name="file" id="fileInput" class="hidden" accept=".csv,.xlsx,.xls"
+                    onchange="handleFileSelect(this)">
+
+                <!-- Drop Zone -->
+                <div id="dropZone" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)"
+                    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+                    class="border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/30 transition-all duration-300 group mb-5">
+
+                    <div id="dropDefault">
+                        <div
+                            class="w-16 h-16 bg-emerald-50 group-hover:bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4 transition">
+                            <i
+                                class="fa-solid fa-cloud-arrow-up text-emerald-500 text-2xl group-hover:animate-bounce"></i>
+                        </div>
+                        <p class="font-black text-gray-700 text-base">Drop your file here</p>
+                        <p class="text-gray-400 text-sm mt-1">or <span class="text-emerald-600 font-bold">click to
+                                browse</span></p>
+                        <p class="text-xs text-gray-300 mt-3">Supports <strong class="text-gray-500">.xlsx</strong>,
+                            <strong class="text-gray-500">.xls</strong>, <strong class="text-gray-500">.csv</strong></p>
+                    </div>
+
+                    <div id="dropSelected" class="hidden flex-col items-center">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-file-excel text-emerald-600 text-2xl"></i>
+                        </div>
+                        <p id="selectedFileName" class="font-black text-gray-800 text-sm"></p>
+                        <p class="text-xs text-gray-400 mt-1">Ready to upload</p>
+                    </div>
+                </div>
+
+                <button type="submit" id="uploadBtn"
+                    class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black py-3.5 rounded-xl shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2.5 text-sm">
+                    <i class="fa-solid fa-file-import"></i> Import Schedule to Pipeline
+                </button>
+            </form>
+
+            <div class="mt-5 border-t border-gray-50 pt-4">
+                <a href="/media/demo_files/linkedin_demo_schedule.xlsx" download
+                    class="w-full flex items-center justify-center gap-2 bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-200 text-gray-700 hover:text-green-700 text-sm font-bold py-2.5 rounded-xl transition">
+                    <i class="fa-solid fa-download text-green-600"></i>
+                    Download Demo Excel Template
+                </a>
+            </div>
+        </div>
+
+        <!-- Column Guide (2 cols) -->
+        <div class="sm:col-span-2 flex flex-col gap-4">
+
+            <!-- Column Reference -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <h3 class="font-black text-gray-800 text-sm mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-table-columns text-indigo-500"></i>
+                    Excel Columns Guide
+                </h3>
+                <div class="space-y-2.5">
+                    {% for col in "12345678" %}
+                    {% if col == "1" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-emerald-50 border border-emerald-200 text-emerald-700 px-1.5 py-0.5 rounded font-mono shrink-0">date</code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Publish Date</p>
+                            <p class="text-[10px] text-gray-400">e.g. 2026-06-15 or 15/06/2026</p>
+                        </div>
+                    </div>
+                    {% elif col == "2" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-red-50 border border-red-200 text-red-700 px-1.5 py-0.5 rounded font-mono shrink-0">topic <span class="text-red-500">*</span></code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">LinkedIn Post Topic</p>
+                            <p class="text-[10px] text-gray-400">Required — what the AI post is about</p>
+                        </div>
+                    </div>
+                    {% elif col == "3" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-purple-50 border border-purple-200 text-purple-700 px-1.5 py-0.5 rounded font-mono shrink-0">tone</code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Brand Tone</p>
+                            <p class="text-[10px] text-gray-400">Professional, Visionary, Gen-Z…</p>
+                        </div>
+                    </div>
+                    {% elif col == "4" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-blue-50 border border-blue-200 text-blue-700 px-1.5 py-0.5 rounded font-mono shrink-0">audience</code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Target Audience</p>
+                            <p class="text-[10px] text-gray-400">CTOs, Founders, HR, General…</p>
+                        </div>
+                    </div>
+                    {% elif col == "5" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-slate-100 border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono shrink-0">platform</code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Platform</p>
+                            <p class="text-[10px] text-gray-400">Defaults to LinkedIn</p>
+                        </div>
+                    </div>
+                    {% elif col == "6" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-slate-100 border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono shrink-0">priority</code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Priority</p>
+                            <p class="text-[10px] text-gray-400">High, Medium, Low</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="mt-3 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                    <p class="text-[10px] text-red-600 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-asterisk text-[8px]"></i>
+                        Only <code class="bg-red-100 px-1 rounded font-mono">topic</code> column is required
+                    </p>
+                </div>
+            </div>
+
+            <!-- How it works -->
+            <div class="bg-slate-800 rounded-2xl p-5 text-white">
+                <h3 class="font-black text-sm mb-4 text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-400"></i> What Happens Next?
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2.5">
+                        <div
+                            class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[9px] font-black shrink-0 mt-0.5">
+                            1</div>
+                        <p class="text-xs text-slate-300 leading-relaxed">Each row becomes a <strong
+                                class="text-white">Draft</strong> in the content queue</p>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <div
+                            class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[9px] font-black shrink-0 mt-0.5">
+                            2</div>
+                        <p class="text-xs text-slate-300 leading-relaxed">Click <strong class="text-yellow-400">Run AI
+                                Cron</strong> to generate full LinkedIn posts with Ollama</p>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <div
+                            class="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center text-white text-[9px] font-black shrink-0 mt-0.5">
+                            3</div>
+                        <p class="text-xs text-slate-300 leading-relaxed">Review &amp; approve content in the <strong
+                                class="text-white">Review Center</strong></p>
+                    </div>
+                </div>
+                <a href="{% url 'review_dashboard' %}"
+                    class="mt-4 flex items-center justify-center gap-2 bg-indigo-500/30 hover:bg-indigo-500/50 border border-indigo-500/40 text-indigo-300 text-xs font-semibold rounded-xl py-2 transition">
+                    <i class="fa-solid fa-tasks"></i> Go to Review Center
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function handleFileSelect(input) {
+        if (input.files.length > 0) {
+            const file = input.files[0];
+            document.getElementById('dropDefault').style.display = 'none';
+            const selectedDiv = document.getElementById('dropSelected');
+            selectedDiv.style.display = 'flex';
+            document.getElementById('selectedFileName').textContent = file.name;
+        }
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        document.getElementById('dropZone').classList.add('border-emerald-500', 'bg-emerald-50');
+    }
+
+    function handleDragLeave(e) {
+        document.getElementById('dropZone').classList.remove('border-emerald-500', 'bg-emerald-50');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        handleDragLeave(e);
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const dt = new DataTransfer();
+            dt.items.add(files[0]);
+            const input = document.getElementById('fileInput');
+            input.files = dt.files;
+            handleFileSelect(input);
+        }
+    }
+</script>
+{% endblock %}

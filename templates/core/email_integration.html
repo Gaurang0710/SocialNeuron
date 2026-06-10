@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Email Integration{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto flex flex-col gap-6">
+    <div class="bg-gradient-to-br from-cyan-950 via-slate-950 to-indigo-950 rounded-2xl p-7 text-white shadow-xl overflow-hidden relative">
+        <div class="absolute -right-10 -top-10 w-48 h-48 bg-cyan-400/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <span class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest bg-white/10 border border-white/15 rounded-full px-3 py-1 mb-3">
+                    <i class="fa-solid fa-envelope text-cyan-300"></i> Alert Routing
+                </span>
+                <h1 class="text-3xl font-black tracking-tight">Email Integration</h1>
+                <p class="text-slate-300 text-sm mt-2 max-w-xl">Add one or more users who should receive Gmail alerts when the manual cron generates LinkedIn drafts for review.</p>
+            </div>
+            <div class="bg-white/10 border border-white/15 rounded-xl px-5 py-4 text-center">
+                <div class="text-3xl font-black text-cyan-300">{{ active_count }}</div>
+                <div class="text-xs text-slate-300 font-semibold">Active Recipient(s)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="lg:col-span-1 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h2 class="font-black text-gray-900 mb-2">Add Recipients</h2>
+            <p class="text-sm text-gray-500 mb-5">Paste multiple emails separated by commas, spaces, or new lines.</p>
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Name / Group</label>
+                    <input type="text" name="name" placeholder="e.g. Marketing Team" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Email Address(es)</label>
+                    <textarea name="emails" rows="7" placeholder="jitendra.pysquad@gmail.com&#10;manager@example.com, founder@example.com" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none resize-none" required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-black rounded-xl py-3 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Save Email Recipients
+                </button>
+            </form>
+
+            <div class="mt-5 bg-gray-50 border border-gray-100 rounded-xl p-4 text-xs text-gray-500 leading-relaxed">
+                If no active recipients are configured, cron falls back to <span class="font-bold text-gray-700">{{ fallback_email }}</span>.
+            </div>
+        </section>
+
+        <section class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h2 class="font-black text-gray-900">Recipients</h2>
+                    <p class="text-xs text-gray-500 mt-1">Active users receive review alerts from the manual cron.</p>
+                </div>
+                <a href="{% url 'trigger_cron' %}" onclick="event.preventDefault(); document.getElementById('emailCronForm').submit();" class="hidden sm:inline-flex items-center gap-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-black text-xs px-4 py-2 rounded-xl">
+                    <i class="fa-solid fa-bolt"></i> Run Cron
+                </a>
+                <form id="emailCronForm" action="{% url 'trigger_cron' %}" method="post" class="hidden">{% csrf_token %}</form>
+            </div>
+
+            <div class="divide-y divide-gray-100">
+                {% for recipient in recipients %}
+                <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-gray-50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center {% if recipient.is_active %}bg-cyan-100 text-cyan-700{% else %}bg-gray-100 text-gray-400{% endif %}">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900">{{ recipient.email }}</div>
+                            <div class="text-xs text-gray-500">
+                                {{ recipient.name|default:"No label" }} · Added {{ recipient.created_at|date:"M d, Y" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-black px-2.5 py-1 rounded-full {% if recipient.is_active %}bg-emerald-100 text-emerald-700{% else %}bg-gray-100 text-gray-500{% endif %}">
+                            {% if recipient.is_active %}Active{% else %}Disabled{% endif %}
+                        </span>
+                        <a href="{% url 'toggle_email_recipient' recipient.id %}" class="text-xs font-bold px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 text-gray-600">
+                            {% if recipient.is_active %}Disable{% else %}Enable{% endif %}
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="px-6 py-12 text-center">
+                    <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-400">
+                        <i class="fa-solid fa-inbox text-xl"></i>
+                    </div>
+                    <h3 class="font-black text-gray-800">No email recipients yet</h3>
+                    <p class="text-sm text-gray-500 mt-1">Add one or multiple emails to receive cron alerts.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

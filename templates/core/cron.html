@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Cron Simulator{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 4rem;">
+    <i class="fa-solid fa-bell" style="font-size: 4rem; color: #f59e0b; margin-bottom: 1.5rem;"></i>
+    <h2>Daily Notifications Sent!</h2>
+    <p style="color: var(--text-secondary); margin-top: 1rem; margin-bottom: 2rem;">
+        Successfully dispatched reminders to Email, Slack, and Discord for {{ count }} upcoming scheduled posts.
+    </p>
+    <a href="{% url 'dashboard' %}" class="btn-primary">Return to Dashboard</a>
+</div>
+{% endblock %}

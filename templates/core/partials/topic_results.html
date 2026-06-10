@@ -1,0 +1,192 @@
+{% if error %}
+<!-- ─── Error State ─── -->
+<div
+    class="min-h-[420px] bg-red-50 border-2 border-red-200 border-dashed rounded-2xl flex flex-col items-center justify-center text-center p-8 animate-[fadeUp_0.4s_ease-out]">
+    <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
+        <i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl"></i>
+    </div>
+    <h3 class="font-black text-red-800 text-xl mb-2">Ollama Not Reachable</h3>
+    <p class="text-red-600 text-sm max-w-md leading-relaxed mb-4">{{ error }}</p>
+    <div
+        class="bg-white border border-red-200 rounded-xl p-4 text-left text-xs text-gray-600 max-w-sm w-full space-y-2">
+        <p class="font-bold text-gray-700 mb-1">Quick Fix Checklist:</p>
+        <p class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-green-500"></i> Run <code
+                class="bg-gray-100 px-1.5 py-0.5 rounded font-mono">ollama serve</code> in terminal</p>
+        <p class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-green-500"></i> Check your <code
+                class="bg-gray-100 px-1.5 py-0.5 rounded font-mono">OLLAMA_URL</code> in <code
+                class="bg-gray-100 px-1.5 py-0.5 rounded font-mono">.env</code></p>
+        <p class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-green-500"></i> Pull model: <code
+                class="bg-gray-100 px-1.5 py-0.5 rounded font-mono">ollama pull llama3</code></p>
+    </div>
+</div>
+
+{% else %}
+<!-- ─── Results Header ─── -->
+<div class="animate-[fadeUp_0.35s_ease-out]">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div>
+            <h3 class="font-black text-gray-900 text-xl flex items-center gap-2">
+                <i class="fa-solid fa-sparkles text-yellow-500"></i>
+                AI-Discovered Topics
+            </h3>
+            <p class="text-sm text-gray-400 mt-0.5">{{ topics|length }} topics ranked by virality &amp; engagement
+                potential</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span
+                class="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-bold px-3 py-1.5 rounded-full">
+                <i class="fa-solid fa-robot text-[10px]"></i> Powered by Ollama
+            </span>
+        </div>
+    </div>
+
+    <!-- ─── Topic Cards ─── -->
+    <div class="space-y-4">
+        {% for t in topics %}
+        <div class="group bg-white border border-gray-100 hover:border-indigo-300 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-indigo-50 transition-all duration-300 overflow-hidden"
+            style="animation: fadeUp 0.4s ease-out {{ forloop.counter0 }}00ms both;">
+
+            <div class="flex">
+                <!-- Left Score Bar -->
+                <div class="w-1.5 shrink-0 bg-gradient-to-b
+          {% if t.score >= 95 %}from-yellow-400 to-orange-500
+          {% elif t.score >= 90 %}from-indigo-500 to-purple-600
+          {% else %}from-blue-400 to-indigo-600{% endif %}">
+                </div>
+
+                <div class="flex-1 p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+
+                        <!-- Score Ring -->
+                        <div class="shrink-0">
+                            <div class="relative w-14 h-14">
+                                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
+                                    <circle cx="28" cy="28" r="22" stroke="#e8e8f0" stroke-width="5" fill="none" />
+                                    <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
+                                        stroke-dashoffset="{{ t.score|default:90 }}" stroke-linecap="round" fill="none"
+                                        stroke-width="5"
+                                        class="{% if t.score >= 95 %}stroke-yellow-500{% elif t.score >= 90 %}stroke-indigo-500{% else %}stroke-blue-500{% endif %}" />
+                                </svg>
+                                <span
+                                    class="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-800">{{ t.score }}</span>
+                            </div>
+                            <div class="text-[10px] text-center text-gray-400 mt-1 font-medium">Score</div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <h4
+                                class="font-extrabold text-gray-900 text-base leading-snug mb-2 group-hover:text-indigo-700 transition line-clamp-2">
+                                {{ t.title }}
+                            </h4>
+
+                            <!-- Meta badges -->
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg
+                  {% if t.virality == 'Exceptional' %}bg-yellow-50 text-yellow-700 border border-yellow-200
+                  {% elif t.virality == 'Very High' %}bg-orange-50 text-orange-700 border border-orange-200
+                  {% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                                    <i class="fa-solid fa-fire text-[10px]"></i> {{ t.virality }} Virality
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200">
+                                    <i class="fa-solid fa-masks-theater text-[10px]"></i> {{ t.tone }}
+                                </span>
+                                {% if t.audience %}
+                                <span
+                                    class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">
+                                    <i class="fa-solid fa-users text-[10px]"></i> {{ t.audience }}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Virality bar -->
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] text-gray-400 w-14 shrink-0">Virality</span>
+                                <div class="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                    <div class="h-full rounded-full bg-gradient-to-r
+                    {% if t.virality == 'Exceptional' %}from-yellow-400 to-orange-500
+                    {% elif t.virality == 'Very High' %}from-indigo-400 to-purple-500
+                    {% else %}from-blue-400 to-emerald-500{% endif %}"
+                                        style="width: {% if t.virality == 'Exceptional' %}98%{% elif t.virality == 'Very High' %}85%{% else %}72%{% endif %}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col gap-2 shrink-0">
+                            <form method="post" action="{% url 'save_generated_topic' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="title" value="{{ t.title }}">
+                                <input type="hidden" name="tone" value="{{ t.tone }}">
+                                <input type="hidden" name="audience" value="{{ t.audience }}">
+                                <button type="submit"
+                                    class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md shadow-indigo-200 hover:shadow-indigo-300 transition transform hover:scale-105 flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <i class="fa-solid fa-plus"></i> Send to Drafts
+                                </button>
+                            </form>
+                            <button type="button" onclick="copyTopic(this, '{{ t.title|escapejs }}')"
+                                class="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- ─── Bottom Action Bar ─── -->
+    {% if topics %}
+    <div
+        class="mt-5 bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+            <p class="text-white font-bold text-sm">🎯 Happy with these topics?</p>
+            <p class="text-slate-400 text-xs mt-0.5">Send them all to Drafts, then Run Cron to auto-generate LinkedIn
+                posts.</p>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="{% url 'dashboard' %}"
+                class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition border border-white/20">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="{% url 'review_dashboard' %}"
+                class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-900/40 transition">
+                <i class="fa-solid fa-tasks"></i> Review Center →
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<style>
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    function copyTopic(btn, text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const icon = btn.querySelector('i');
+            icon.className = 'fa-solid fa-check';
+            btn.classList.add('bg-green-50', 'text-green-600', 'border-green-200');
+            setTimeout(() => {
+                icon.className = 'fa-regular fa-copy';
+                btn.classList.remove('bg-green-50', 'text-green-600', 'border-green-200');
+            }, 1500);
+        });
+    }
+</script>

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}Published History{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6">
+
+    <!-- ═══ Hero Header ═══ -->
+    <div
+        class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1a0533] via-[#2d1060] to-[#0f1030] p-7 text-white shadow-2xl">
+        <div
+            class="pointer-events-none absolute -top-10 right-10 w-60 h-60 bg-purple-600 opacity-20 rounded-full blur-3xl">
+        </div>
+        <div
+            class="pointer-events-none absolute bottom-0 left-16 w-40 h-40 bg-indigo-400 opacity-15 rounded-full blur-2xl">
+        </div>
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span
+                        class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                        <i class="fa-solid fa-rocket text-purple-400 text-[10px]"></i> Published Content
+                    </span>
+                </div>
+                <h1 class="text-3xl font-black tracking-tight">Publication History</h1>
+                <p class="text-slate-300 mt-1 text-sm max-w-md">All AI-generated posts that have been approved and
+                    auto-published to LinkedIn.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-center bg-white/10 border border-white/20 backdrop-blur-sm rounded-2xl px-6 py-3">
+                    <p class="text-3xl font-black text-purple-300">{{ published.count }}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Total Published</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Content ═══ -->
+    {% if published %}
+    <!-- Table View -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h2 class="font-black text-gray-800 flex items-center gap-2">
+                <i class="fa-brands fa-linkedin text-blue-600"></i> LinkedIn Published Posts
+            </h2>
+            <span class="text-xs text-gray-400 font-medium">Sorted by most recent</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        <th class="px-6 py-3 w-8">#</th>
+                        <th class="px-6 py-3">Topic</th>
+                        <th class="px-6 py-3 hidden sm:table-cell">Platform</th>
+                        <th class="px-6 py-3 hidden md:table-cell">Tone</th>
+                        <th class="px-6 py-3 text-center">AI Scores</th>
+                        <th class="px-6 py-3 hidden lg:table-cell">Published</th>
+                        <th class="px-6 py-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for p in published %}
+                    <tr class="hover:bg-purple-50/30 transition duration-150 group">
+                        <td class="px-6 py-4 text-xs font-bold text-gray-300">{{ forloop.counter }}</td>
+                        <td class="px-6 py-4">
+                            <a href="{% url 'post_detail' p.id %}"
+                                class="text-sm font-extrabold text-gray-800 hover:text-purple-700 transition group-hover:text-purple-700 line-clamp-1 block max-w-xs">{{ p.topic }}</a>
+                            {% if p.category %}
+                            <span class="text-[10px] text-gray-400 font-medium">{{ p.category }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 hidden sm:table-cell">
+                            <div class="flex items-center gap-1.5">
+                                <i class="fa-brands fa-linkedin text-blue-600 text-base"></i>
+                                <span class="text-sm text-gray-600 font-medium">{{ p.platform }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 hidden md:table-cell">
+                            {% if p.tone %}
+                            <span
+                                class="text-xs font-semibold bg-purple-50 border border-purple-100 text-purple-700 px-2.5 py-1 rounded-full">{{ p.tone }}</span>
+                            {% else %}<span class="text-gray-300 text-xs">—</span>{% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <div class="text-center">
+                                    <div class="text-xs font-black text-orange-600">{{ p.engagement_score }}</div>
+                                    <div class="text-[9px] text-gray-400">Eng</div>
+                                </div>
+                                <div class="w-px h-6 bg-gray-100"></div>
+                                <div class="text-center">
+                                    <div class="text-xs font-black text-blue-600">{{ p.readability_score }}</div>
+                                    <div class="text-[9px] text-gray-400">Read</div>
+                                </div>
+                                <div class="w-px h-6 bg-gray-100"></div>
+                                <div class="text-center">
+                                    <div class="text-xs font-black text-purple-600">{{ p.virality_score }}</div>
+                                    <div class="text-[9px] text-gray-400">Viral</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 hidden lg:table-cell text-sm text-gray-500 whitespace-nowrap">{{ p.date|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="{% url 'post_detail' p.id %}"
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-100 hover:border-purple-200 px-3 py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-eye text-[10px]"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div
+        class="bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center py-20 px-8">
+        <div class="relative mb-6">
+            <div class="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
+                <i class="fa-brands fa-linkedin text-purple-500 text-4xl"></i>
+            </div>
+            <div
+                class="absolute -top-1 -right-1 w-8 h-8 bg-emerald-400 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-check text-white text-xs"></i>
+            </div>
+        </div>
+        <h3 class="text-xl font-black text-gray-700 mb-2">No published posts yet</h3>
+        <p class="text-gray-400 max-w-sm text-sm leading-relaxed mb-8">
+            Your published LinkedIn posts will appear here. Start the pipeline by generating topics, then run Cron to
+            create AI content.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <a href="{% url 'generate_topics' %}"
+                class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition">
+                <i class="fa-solid fa-lightbulb"></i> Generate Topics
+            </a>
+            <a href="{% url 'review_dashboard' %}"
+                class="inline-flex items-center gap-2 bg-white border-2 border-gray-200 hover:border-indigo-300 text-gray-700 font-bold px-5 py-2.5 rounded-xl transition">
+                <i class="fa-solid fa-tasks text-indigo-500"></i> Go to Review Center
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% block title %}Review Center{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6 min-h-full">
+
+    <!-- ═══ Hero Header ═══ -->
+    <div
+        class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0a0a1a] via-[#1a1040] to-[#0f1a35] p-7 text-white shadow-2xl">
+        <div
+            class="pointer-events-none absolute -top-8 -right-8 w-64 h-64 bg-indigo-600 opacity-15 rounded-full blur-3xl">
+        </div>
+        <div
+            class="pointer-events-none absolute bottom-0 left-20 w-48 h-48 bg-purple-500 opacity-15 rounded-full blur-2xl">
+        </div>
+
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span
+                        class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-sm">
+                        <i class="fa-solid fa-tasks text-indigo-400 text-[10px]"></i> Review Center
+                    </span>
+                </div>
+                <h1 class="text-3xl font-black tracking-tight">Content Review Pipeline</h1>
+                <p class="text-slate-300 mt-1 text-sm max-w-lg">Approve, reject or regenerate AI-drafted LinkedIn posts
+                    before they go live. Posts move through Pending → Approved → Published.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <form action="{% url 'trigger_cron' %}" method="post" class="inline-flex">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-black text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-yellow-900/30 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-bolt"></i> Check Today/Tomorrow &amp; Send Gmail
+                    </button>
+                </form>
+                <a href="{% url 'generate_topics' %}"
+                    class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition">
+                    <i class="fa-solid fa-lightbulb text-yellow-400"></i> Topic Generator
+                </a>
+            </div>
+        </div>
+
+        <!-- Pipeline totals -->
+        <div class="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+            <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-center">
+                <div class="text-2xl font-black text-yellow-400">{{ pending.count }}</div>
+                <div class="text-xs text-slate-400 mt-0.5">Pending Review</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-center">
+                <div class="text-2xl font-black text-emerald-400">{{ approved.count }}</div>
+                <div class="text-xs text-slate-400 mt-0.5">Approved</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-center">
+                <div class="text-2xl font-black text-red-400">{{ rejected.count }}</div>
+                <div class="text-xs text-slate-400 mt-0.5">Rejected</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-center">
+                <div class="text-2xl font-black text-purple-400">{{ pending.count|add:approved.count|add:rejected.count }}</div>
+                <div class="text-xs text-slate-400 mt-0.5">Total in Pipeline</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Kanban Board ═══ -->
+    <div class="flex gap-5 overflow-x-auto pb-4 flex-1" style="min-height: 520px;">
+
+        <!-- ─── Column: Pending ─── -->
+        <div
+            class="flex flex-col min-w-[340px] flex-1 bg-amber-50/60 border border-amber-200 rounded-2xl overflow-hidden">
+            <!-- Column Header -->
+            <div class="bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-white">
+                    <div class="w-8 h-8 bg-white/25 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-hourglass-half text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-sm">Pending AI Review</div>
+                        <div class="text-amber-100 text-[11px]">Awaiting your decision</div>
+                    </div>
+                </div>
+                <span
+                    class="bg-white text-amber-600 font-black text-sm w-8 h-8 rounded-full flex items-center justify-center shadow">{{ pending.count }}</span>
+            </div>
+
+            <!-- Cards -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-3">
+                {% for p in pending %}
+                <div class="bg-white rounded-xl border border-amber-100 shadow-sm hover:shadow-md hover:border-amber-300 transition-all duration-200 overflow-hidden group"
+                    style="animation: slideUp 0.4s ease-out {{ forloop.counter0 }}00ms both;">
+                    <!-- Top accent -->
+                    <div class="h-1 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+                    <div class="p-4">
+                        <!-- Date + Score row -->
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-400 flex items-center gap-1">
+                                <i class="fa-regular fa-calendar text-[10px]"></i>
+                                {{ p.date|date:"M d, Y" }}
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                {% if p.sentiment %}
+                                <span
+                                    class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100">{{ p.sentiment }}</span>
+                                {% endif %}
+                                <span
+                                    class="text-[10px] font-black bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">Sc:
+                                    {{ p.engagement_score }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Topic -->
+                        <h4
+                            class="font-extrabold text-gray-900 text-sm leading-snug mb-2 group-hover:text-amber-700 transition line-clamp-2">
+                            {{ p.topic }}</h4>
+
+                        <!-- AI content preview -->
+                        {% if p.generated_content %}
+                        <div
+                            class="text-xs text-gray-500 bg-gray-50 border border-gray-100 rounded-lg p-2.5 line-clamp-3 leading-relaxed mb-3">
+                            {{ p.generated_content }}
+                        </div>
+                        {% else %}
+                        <div
+                            class="text-xs text-gray-400 italic bg-gray-50 border border-dashed border-gray-200 rounded-lg p-2.5 mb-3 text-center">
+                            <i class="fa-solid fa-robot mr-1"></i> No content yet — run Cron to generate
+                        </div>
+                        {% endif %}
+
+                        <!-- Scores mini-bar -->
+                        <div class="grid grid-cols-3 gap-1.5 mb-3">
+                            <div class="text-center bg-orange-50 rounded-lg py-1.5">
+                                <div class="text-[10px] text-gray-400">Engage</div>
+                                <div class="text-xs font-black text-orange-600">{{ p.engagement_score }}</div>
+                            </div>
+                            <div class="text-center bg-blue-50 rounded-lg py-1.5">
+                                <div class="text-[10px] text-gray-400">Read</div>
+                                <div class="text-xs font-black text-blue-600">{{ p.readability_score }}</div>
+                            </div>
+                            <div class="text-center bg-purple-50 rounded-lg py-1.5">
+                                <div class="text-[10px] text-gray-400">Viral</div>
+                                <div class="text-xs font-black text-purple-600">{{ p.virality_score }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Action buttons -->
+                        <div class="flex gap-2">
+                            <a href="{% url 'approve_post' p.id %}"
+                                class="flex-1 flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2 rounded-lg transition transform hover:scale-[1.02] shadow-sm shadow-emerald-200">
+                                <i class="fa-solid fa-check"></i> Approve
+                            </a>
+                            <a href="{% url 'reject_post' p.id %}"
+                                class="flex-1 flex items-center justify-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-2 rounded-lg transition transform hover:scale-[1.02] shadow-sm shadow-red-200">
+                                <i class="fa-solid fa-xmark"></i> Reject
+                            </a>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <a href="{% url 'post_detail' p.id %}"
+                                class="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 border border-gray-200 hover:border-indigo-200 text-gray-600 text-xs font-semibold py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-eye"></i> Full Preview
+                            </a>
+                            <a href="{% url 'regenerate_post' p.id %}"
+                                class="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 text-xs font-semibold py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-rotate text-[10px]"></i> Regenerate
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="flex flex-col items-center justify-center text-center py-12 px-4">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-inbox text-2xl text-amber-400"></i>
+                    </div>
+                    <p class="font-bold text-gray-500 text-sm">No pending drafts</p>
+                    <p class="text-xs text-gray-400 mt-1">Upload an Excel schedule or run Cron to generate AI content
+                    </p>
+                    <a href="{% url 'upload_csv' %}"
+                        class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 bg-amber-100 hover:bg-amber-200 px-3 py-2 rounded-lg transition">
+                        <i class="fa-solid fa-upload"></i> Upload Schedule
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ─── Column: Approved ─── -->
+        <div
+            class="flex flex-col min-w-[340px] flex-1 bg-emerald-50/60 border border-emerald-200 rounded-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-white">
+                    <div class="w-8 h-8 bg-white/25 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-circle-check text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-sm">Ready to Auto-Publish</div>
+                        <div class="text-emerald-100 text-[11px]">Waiting for scheduled date</div>
+                    </div>
+                </div>
+                <span
+                    class="bg-white text-emerald-600 font-black text-sm w-8 h-8 rounded-full flex items-center justify-center shadow">{{ approved.count }}</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-3">
+                {% for p in approved %}
+                <div class="bg-white rounded-xl border border-emerald-100 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200 overflow-hidden group"
+                    style="animation: slideUp 0.4s ease-out {{ forloop.counter0 }}00ms both;">
+                    <div class="h-1 bg-gradient-to-r from-emerald-400 to-green-500"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-400 flex items-center gap-1">
+                                <i class="fa-regular fa-calendar text-[10px]"></i>
+                                {{ p.date|date:"M d, Y" }}
+                            </span>
+                            <span
+                                class="text-[10px] inline-flex items-center gap-1 font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                                <i class="fa-solid fa-circle-check text-[9px]"></i> Approved
+                            </span>
+                        </div>
+
+                        <h4
+                            class="font-extrabold text-gray-900 text-sm leading-snug mb-2 group-hover:text-emerald-700 transition line-clamp-2">
+                            {{ p.topic }}</h4>
+
+                        {% if p.tone %}
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            <span
+                                class="text-[10px] font-semibold bg-purple-50 border border-purple-100 text-purple-600 px-2 py-0.5 rounded-full">{{ p.tone }}</span>
+                            {% if p.category %}<span
+                                class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{{ p.category }}</span>{% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Score bar row -->
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-[10px] text-gray-400 w-16 shrink-0">Engagement</span>
+                            <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500"
+                                    style="width: {{ p.engagement_score }}%"></div>
+                            </div>
+                            <span class="text-[10px] font-black text-emerald-700">{{ p.engagement_score }}</span>
+                        </div>
+
+                        <div
+                            class="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-3 font-semibold">
+                            <i class="fa-solid fa-clock text-[10px]"></i>
+                            Will auto-publish on next Cron run
+                        </div>
+
+                        <a href="{% url 'post_detail' p.id %}"
+                            class="w-full flex items-center justify-center gap-1.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 border border-gray-200 hover:border-emerald-200 text-gray-600 text-xs font-semibold py-2 rounded-lg transition">
+                            <i class="fa-solid fa-eye"></i> Preview Full Content
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="flex flex-col items-center justify-center text-center py-12 px-4">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-circle-check text-2xl text-emerald-400"></i>
+                    </div>
+                    <p class="font-bold text-gray-500 text-sm">No approved posts yet</p>
+                    <p class="text-xs text-gray-400 mt-1">Approve posts from the Pending column to queue them for
+                        publishing</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ─── Column: Rejected ─── -->
+        <div class="flex flex-col min-w-[300px] flex-1 bg-red-50/60 border border-red-200 rounded-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-red-500 to-rose-600 px-5 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-white">
+                    <div class="w-8 h-8 bg-white/25 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-ban text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-sm">Rejected Drafts</div>
+                        <div class="text-red-100 text-[11px]">Needs regeneration</div>
+                    </div>
+                </div>
+                <span
+                    class="bg-white text-red-600 font-black text-sm w-8 h-8 rounded-full flex items-center justify-center shadow">{{ rejected.count }}</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-3">
+                {% for p in rejected %}
+                <div class="bg-white rounded-xl border border-red-100 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden opacity-80 hover:opacity-100 group"
+                    style="animation: slideUp 0.4s ease-out {{ forloop.counter0 }}00ms both;">
+                    <div class="h-1 bg-gradient-to-r from-red-400 to-rose-500"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-gray-400 flex items-center gap-1">
+                                <i class="fa-regular fa-calendar text-[10px]"></i>
+                                {{ p.date|date:"M d, Y" }}
+                            </span>
+                            <span
+                                class="text-[10px] inline-flex items-center gap-1 font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
+                                <i class="fa-solid fa-xmark text-[9px]"></i> Rejected
+                            </span>
+                        </div>
+
+                        <h4
+                            class="font-extrabold text-gray-900 text-sm leading-snug mb-3 line-clamp-2 group-hover:text-red-700 transition">
+                            {{ p.topic }}</h4>
+
+                        {% if p.category %}
+                        <div
+                            class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full inline-block mb-3">
+                            {{ p.category }}</div>
+                        {% endif %}
+
+                        <a href="{% url 'regenerate_post' p.id %}"
+                            class="w-full flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold py-2.5 rounded-lg shadow-sm shadow-indigo-200 transition transform hover:scale-[1.02]">
+                            <i class="fa-solid fa-rotate"></i> Regenerate with AI
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="flex flex-col items-center justify-center text-center py-12 px-4">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-party-horn text-2xl text-red-400"></i>
+                    </div>
+                    <p class="font-bold text-gray-500 text-sm">No rejections!</p>
+                    <p class="text-xs text-gray-400 mt-1">Great — all content is moving through the pipeline smoothly
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div><!-- end kanban -->
+
+    <!-- ═══ Help Guide ═══ -->
+    <div class="bg-slate-800 rounded-2xl p-5 text-white">
+        <h3 class="font-bold text-sm mb-3 flex items-center gap-2 text-slate-200">
+            <i class="fa-solid fa-circle-info text-indigo-400"></i> How the Pipeline Works
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="flex items-start gap-3">
+                <div
+                    class="w-7 h-7 rounded-full bg-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 font-black text-xs">
+                    1</div>
+                <div>
+                    <p class="font-semibold text-sm text-white">Upload Excel / Generate Topics</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Add scheduled posts via Topic Generator or Excel upload</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <div
+                    class="w-7 h-7 rounded-full bg-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0 font-black text-xs">
+                    2</div>
+                <div>
+                    <p class="font-semibold text-sm text-white">Run Cron → AI Drafts + Email</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Ollama AI generates content &amp; sends email preview to
+                        your team</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <div
+                    class="w-7 h-7 rounded-full bg-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 font-black text-xs">
+                    3</div>
+                <div>
+                    <p class="font-semibold text-sm text-white">Approve → Auto-Published</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Approved posts publish automatically on the next Cron run
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

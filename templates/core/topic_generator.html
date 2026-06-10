@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% block title %}AI Topic Discovery Engine{% endblock %}
+
+{% block content %}
+<div class="min-h-full flex flex-col gap-6">
+
+  <!-- ═══ Page Hero Header ═══ -->
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] p-7 text-white shadow-2xl">
+    <!-- decorative blobs -->
+    <div class="pointer-events-none absolute -top-10 -right-10 w-72 h-72 bg-purple-600 opacity-20 rounded-full blur-3xl"></div>
+    <div class="pointer-events-none absolute bottom-0 left-32 w-40 h-40 bg-indigo-500 opacity-20 rounded-full blur-2xl"></div>
+
+    <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+            AI-Powered · Ollama
+          </span>
+          <span class="inline-flex items-center gap-1.5 bg-yellow-400/20 border border-yellow-400/30 text-yellow-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+            <i class="fa-solid fa-crown text-[10px]"></i> Pro
+          </span>
+        </div>
+        <h1 class="text-3xl font-black tracking-tight leading-tight">AI Topic Discovery Engine</h1>
+        <p class="text-indigo-200 mt-1 text-sm max-w-lg">Generate high-converting LinkedIn topics, score them by virality, and push directly to your content pipeline — in seconds.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'upload_csv' %}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition backdrop-blur-sm">
+          <i class="fa-solid fa-file-excel text-green-400"></i> Upload Excel
+        </a>
+        <a href="{% url 'review_dashboard' %}" class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition shadow-lg shadow-indigo-900/50">
+          <i class="fa-solid fa-tasks"></i> Review Center
+        </a>
+      </div>
+    </div>
+
+    <!-- workflow steps -->
+    <div class="relative z-10 mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {% for step in "1234" %}
+      {% if step == "1" %}
+      <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-2.5">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-500 text-white text-xs font-bold shrink-0">1</div>
+        <div>
+          <div class="text-xs font-bold text-white">Generate Topics</div>
+          <div class="text-[10px] text-indigo-300">AI brainstorms ideas</div>
+        </div>
+      </div>
+      {% elif step == "2" %}
+      <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-2.5">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-purple-500 text-white text-xs font-bold shrink-0">2</div>
+        <div>
+          <div class="text-xs font-bold text-white">Send to Drafts</div>
+          <div class="text-[10px] text-indigo-300">Save to content queue</div>
+        </div>
+      </div>
+      {% elif step == "3" %}
+      <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-2.5">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white text-xs font-bold shrink-0">3</div>
+        <div>
+          <div class="text-xs font-bold text-white">Run Cron / AI</div>
+          <div class="text-[10px] text-indigo-300">Content is generated</div>
+        </div>
+      </div>
+      {% else %}
+      <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-3 py-2.5">
+        <div class="w-7 h-7 flex items-center justify-center rounded-full bg-green-500 text-white text-xs font-bold shrink-0">4</div>
+        <div>
+          <div class="text-xs font-bold text-white">Review &amp; Publish</div>
+          <div class="text-[10px] text-indigo-300">Approve &amp; email preview</div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ═══ Main Body: 2-col layout ═══ -->
+  <div class="flex flex-col xl:flex-row gap-6">
+
+    <!-- ─── Left Panel: Control Center ─── -->
+    <div class="xl:w-[380px] flex flex-col gap-4 shrink-0">
+
+      <!-- Quick Trend Pills -->
+      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <h3 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-fire text-orange-500"></i>
+          Trending Niches — Click to Fill
+        </h3>
+        <div class="flex flex-wrap gap-2" id="trendPills">
+          <button type="button" onclick="fillQuery(this, 'UI/UX Design Trends 2026')"
+            class="pill bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-paintbrush text-[10px]"></i> UI/UX Trends
+          </button>
+          <button type="button" onclick="fillQuery(this, 'New AI Models & LLMs Disruption')"
+            class="pill bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-robot text-[10px]"></i> Advanced AI Models
+          </button>
+          <button type="button" onclick="fillQuery(this, 'SaaS Growth Strategies for Startups')"
+            class="pill bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-line text-[10px]"></i> SaaS Growth
+          </button>
+          <button type="button" onclick="fillQuery(this, 'Future of Hybrid Work in IT Companies')"
+            class="pill bg-purple-50 text-purple-700 border border-purple-100 hover:bg-purple-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-building-user text-[10px]"></i> IT Hybrid Work
+          </button>
+          <button type="button" onclick="fillQuery(this, 'Cybersecurity Trends for Enterprises')"
+            class="pill bg-red-50 text-red-700 border border-red-100 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved text-[10px]"></i> Cybersecurity
+          </button>
+          <button type="button" onclick="fillQuery(this, 'DevOps Automation and CI/CD Pipelines')"
+            class="pill bg-orange-50 text-orange-700 border border-orange-100 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-gears text-[10px]"></i> DevOps
+          </button>
+          <button type="button" onclick="fillQuery(this, 'Founder Leadership and Startup Culture')"
+            class="pill bg-teal-50 text-teal-700 border border-teal-100 hover:bg-teal-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-lightbulb text-[10px]"></i> Founder Journey
+          </button>
+          <button type="button" onclick="fillQuery(this, 'Cloud Computing and Multi-Cloud Strategy')"
+            class="pill bg-sky-50 text-sky-700 border border-sky-100 hover:bg-sky-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-cloud text-[10px]"></i> Cloud Strategy
+          </button>
+        </div>
+      </div>
+
+      <!-- Generator Form -->
+      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex-1">
+        <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-indigo-500"></i>
+          Configure Your Topic Generator
+        </h3>
+
+        <form hx-post="{% url 'generate_topics' %}"
+              hx-target="#results"
+              hx-indicator="#spinner"
+              hx-swap="innerHTML"
+              class="flex flex-col gap-4">
+          {% csrf_token %}
+
+          <!-- Prompt / Query -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Your Topic / Niche</label>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-3 top-3 text-gray-400 text-sm"><i class="fa-solid fa-pen-to-square"></i></span>
+              <textarea id="searchQuery" name="query" rows="3"
+                placeholder="e.g. The ethical implications of AI integration in enterprise startups..."
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition resize-none leading-relaxed"></textarea>
+            </div>
+            <p class="text-[11px] text-gray-400 mt-1 flex items-center gap-1">
+              <i class="fa-solid fa-circle-info"></i> Be specific for better AI output
+            </p>
+          </div>
+
+          <!-- Tone + Audience -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Brand Tone</label>
+              <div class="relative">
+                <select name="tone" id="toneSelect"
+                  class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl pl-3 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                  <option value="Visionary">🚀 Visionary (Founder)</option>
+                  <option value="Technical">🔧 Deep Technical</option>
+                  <option value="Storytelling">📖 Storytelling</option>
+                  <option value="Professional" selected>💼 Professional</option>
+                  <option value="Gen-Z">✨ Modern / Gen-Z</option>
+                  <option value="Inspirational">💪 Inspirational</option>
+                </select>
+                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"><i class="fa-solid fa-chevron-down"></i></span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Target Audience</label>
+              <div class="relative">
+                <select name="audience" id="audienceSelect"
+                  class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl pl-3 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                  <option value="CTOs and Tech Leads">👨‍💻 CTOs &amp; Leads</option>
+                  <option value="Recruiters & HR">🧑‍💼 HR / Recruitment</option>
+                  <option value="Startup Founders">🚀 Startup Founders</option>
+                  <option value="General Network" selected>🌐 General Network</option>
+                  <option value="Product Managers">📦 Product Managers</option>
+                </select>
+                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"><i class="fa-solid fa-chevron-down"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Count Slider -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
+              Topics to Generate: <span id="countLabel" class="text-indigo-600">4</span>
+            </label>
+            <input type="range" name="count" id="countSlider" min="2" max="8" value="4"
+              oninput="document.getElementById('countLabel').textContent = this.value"
+              class="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-indigo-600">
+            <div class="flex justify-between text-[10px] text-gray-400 mt-1">
+              <span>2</span><span>4</span><span>6</span><span>8</span>
+            </div>
+          </div>
+
+          <!-- Generate Button -->
+          <button type="submit" id="generateBtn"
+            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 rounded-xl py-3.5 font-bold flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 active:scale-95 text-sm">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Topic Ideas
+          </button>
+        </form>
+      </div>
+
+      <!-- Stats Box -->
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white">
+        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 text-slate-200">
+          <i class="fa-solid fa-chart-bar text-indigo-400"></i> Pipeline Stats
+        </h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white/10 rounded-xl p-3 text-center">
+            <div class="text-2xl font-black text-white">{{ draft_count|default:"–" }}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Drafts</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-3 text-center">
+            <div class="text-2xl font-black text-yellow-400">{{ pending_count|default:"–" }}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Pending</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-3 text-center">
+            <div class="text-2xl font-black text-green-400">{{ approved_count|default:"–" }}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Approved</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-3 text-center">
+            <div class="text-2xl font-black text-purple-400">{{ published_count|default:"–" }}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Published</div>
+          </div>
+        </div>
+        <a href="{% url 'review_dashboard' %}" class="mt-4 flex items-center justify-center gap-2 bg-indigo-500/30 hover:bg-indigo-500/50 border border-indigo-500/40 text-indigo-300 text-xs font-semibold rounded-xl py-2.5 transition">
+          <i class="fa-solid fa-arrow-right"></i> Go to Review Center
+        </a>
+      </div>
+
+    </div>
+
+    <!-- ─── Right Panel: Results ─── -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- Results Container -->
+      <div class="flex-1 relative">
+        <!-- Loading Spinner Overlay -->
+        <div id="spinner" class="htmx-indicator absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-2xl">
+          <div class="relative w-20 h-20 mb-4">
+            <svg class="animate-spin w-20 h-20" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="35" stroke="#e0e7ff" stroke-width="6"/>
+              <path d="M40 5 A35 35 0 0 1 75 40" stroke="url(#grad)" stroke-width="6" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#6366f1"/>
+                  <stop offset="100%" stop-color="#a855f7"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <i class="fa-solid fa-robot absolute inset-0 flex items-center justify-center text-indigo-600 text-2xl"></i>
+          </div>
+          <p class="font-black text-indigo-800 text-xl tracking-tight">Brainstorming with Ollama...</p>
+          <p class="text-sm text-gray-400 mt-1">Analyzing market signals &amp; formatting topics</p>
+          <div class="flex gap-1.5 mt-4">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style="animation-delay:0s"></span>
+            <span class="w-2 h-2 rounded-full bg-purple-400 animate-bounce" style="animation-delay:0.15s"></span>
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style="animation-delay:0.3s"></span>
+          </div>
+        </div>
+
+        <!-- Result Content -->
+        <div id="results" class="h-full">
+          <!-- ─── Empty State ─── -->
+          <div class="h-full min-h-[420px] bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-center p-8">
+            <div class="relative mb-5">
+              <div class="w-24 h-24 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto">
+                <i class="fa-solid fa-magnifying-glass-chart text-4xl text-indigo-400"></i>
+              </div>
+              <div class="absolute -top-1 -right-1 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-bolt text-white text-xs"></i>
+              </div>
+            </div>
+            <h3 class="text-xl font-black text-gray-700 mb-2">Your Ideas Will Appear Here</h3>
+            <p class="text-gray-400 max-w-sm text-sm leading-relaxed mb-6">
+              Pick a trending niche or type your own concept on the left panel, then click <strong class="text-indigo-600">Generate AI Topic Ideas</strong> to discover high-converting topics.
+            </p>
+            <div class="grid grid-cols-3 gap-3 max-w-sm w-full">
+              <div class="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+                <i class="fa-solid fa-fire text-orange-500 mb-1 text-lg"></i>
+                <div class="text-xs text-gray-500 font-medium">Virality Score</div>
+              </div>
+              <div class="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+                <i class="fa-solid fa-bullhorn text-indigo-500 mb-1 text-lg"></i>
+                <div class="text-xs text-gray-500 font-medium">Engagement</div>
+              </div>
+              <div class="bg-white border border-gray-100 rounded-xl p-3 text-center shadow-sm">
+                <i class="fa-solid fa-paper-plane text-green-500 mb-1 text-lg"></i>
+                <div class="text-xs text-gray-500 font-medium">Auto Draft</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Styles ═══ -->
+<style>
+  .htmx-indicator { display: none; }
+  .htmx-request .htmx-indicator { display: flex; }
+  .htmx-request.htmx-indicator { display: flex; }
+
+  .pill { user-select: none; }
+  .pill.active-pill {
+    background-color: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4f46e5;
+    cursor: pointer;
+    -webkit-appearance: none;
+    box-shadow: 0 2px 6px rgba(79,70,229,0.3);
+  }
+</style>
+
+<!-- ═══ Scripts ═══ -->
+<script>
+  function fillQuery(btn, text) {
+    const textarea = document.getElementById('searchQuery');
+    textarea.value = text;
+    textarea.focus();
+
+    // highlight effect on textarea
+    textarea.classList.add('ring-2','ring-indigo-400','bg-indigo-50','border-indigo-300');
+    setTimeout(() => textarea.classList.remove('ring-2','ring-indigo-400','bg-indigo-50','border-indigo-300'), 600);
+
+    // mark active pill
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active-pill'));
+    btn.classList.add('active-pill');
+  }
+
+  // After HTMX swap, clear active pill highlight
+  document.body.addEventListener('htmx:afterSwap', () => {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active-pill'));
+  });
+</script>
+{% endblock %}

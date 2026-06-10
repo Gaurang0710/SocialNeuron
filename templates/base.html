@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %} · SocialNEURON AI</title>
+    <meta name="description"
+        content="AI-powered LinkedIn content automation — generate, review, and publish posts automatically.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryHover: '#4338ca',
+                        darkBg: '#0f172a',
+                        sidebarBg: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 99px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Nav active link */
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.1));
+            border-left: 3px solid #6366f1;
+            color: #a5b4fc;
+        }
+
+        .nav-link:not(.active):hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link {
+            transition: all 0.15s ease;
+            border-left: 3px solid transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 antialiased flex h-screen overflow-hidden">
+
+    <!-- ═══ Sidebar ═══ -->
+    <aside class="w-64 bg-sidebarBg text-white flex flex-col hidden md:flex shrink-0">
+
+        <!-- Logo -->
+        <div class="h-16 flex items-center px-5 border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-900/50">
+                    <i class="fa-brands fa-linkedin text-white text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-black text-white text-sm leading-none">SocialNEURON</p>
+                    <p class="text-[10px] text-slate-400 leading-none mt-0.5">AI Automator</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Navigation</p>
+
+            <a href="{% url 'dashboard' %}" id="nav-dashboard"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-chart-pie w-4 text-center text-slate-500"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'generate_topics' %}" id="nav-topics"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-lightbulb w-4 text-center text-yellow-400"></i>
+                <span>Topic Generator</span>
+                <span
+                    class="ml-auto text-[10px] bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 px-1.5 py-0.5 rounded-full font-bold">AI</span>
+            </a>
+
+            <a href="{% url 'upload_csv' %}" id="nav-upload"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-file-excel w-4 text-center text-emerald-400"></i>
+                <span>Excel Upload</span>
+            </a>
+
+            <a href="{% url 'email_integration' %}" id="nav-email"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-envelope w-4 text-center text-cyan-400"></i>
+                <span>Email Integration</span>
+            </a>
+
+            <a href="{% url 'review_dashboard' %}" id="nav-review"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-tasks w-4 text-center text-blue-400"></i>
+                <span>Review Center</span>
+            </a>
+
+            <a href="{% url 'history_view' %}" id="nav-history"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-rocket w-4 text-center text-purple-400"></i>
+                <span>Published History</span>
+            </a>
+        </nav>
+
+        <!-- Bottom: Cron Button -->
+        <div class="px-3 pb-5 shrink-0 border-t border-white/5 pt-4">
+            <form action="{% url 'trigger_cron' %}" method="post">
+                {% csrf_token %}
+                <button type="submit"
+                    class="w-full flex items-center justify-center gap-2 bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/30 text-yellow-300 hover:text-yellow-200 text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                    <i class="fa-solid fa-bolt text-yellow-400"></i> Run Today/Tomorrow Cron
+                </button>
+            </form>
+            <p class="text-[10px] text-slate-600 text-center mt-2">Emails due drafts to Gmail for review</p>
+        </div>
+    </aside>
+
+    <!-- ═══ Main Area ═══ -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+
+        <!-- Top bar -->
+        <header
+            class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 shadow-sm z-10 shrink-0">
+            <div class="flex items-center gap-3">
+                <!-- Mobile menu toggle (visual only) -->
+                <button class="md:hidden text-gray-400 hover:text-gray-700">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <h2 class="font-black text-gray-800 text-base leading-none">{% block page_title %}Dashboard{% endblock %}
+                    </h2>
+                    <p class="text-[11px] text-gray-400 mt-0.5">AI LinkedIn Automation Platform</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div
+                    class="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-full">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                    Ollama Connected
+                </div>
+            </div>
+        </header>
+
+        <!-- Django Messages -->
+        {% if messages %}
+        <div class="px-6 pt-4 space-y-2 shrink-0">
+            {% for message in messages %}
+            <div class="rounded-xl border px-4 py-3 text-sm font-semibold flex items-center gap-2
+          {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800
+          {% else %}bg-emerald-50 border-emerald-200 text-emerald-800{% endif %}">
+                <i
+                    class="{% if message.tags == 'error' %}fa-solid fa-triangle-exclamation text-red-500{% else %}fa-solid fa-circle-check text-emerald-500{% endif %} text-sm"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Main Body -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 relative">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+</body>
+<!-- Active Nav Highlight -->
+<script>
+        (function () {
+            const path = window.location.pathname;
+            const map = {
+                '/': 'nav-dashboard',
+                '/topic-generator': 'nav-topics',
+                '/excel-upload': 'nav-upload',
+                '/email-integration': 'nav-email',
+                '/review': 'nav-review',
+                '/history': 'nav-history',
+            };
+            for (const [prefix, id] of Object.entries(map)) {
+                if (path === prefix || (prefix !== '/' && path.startsWith(prefix))) {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('active');
+                    break;
+                }
+            }
+            // Default dashboard
+            if (path === '/') {
+                const el = document.getElementById('nav-dashboard');
+                if (el) el.classList.add('active');
+            }
+        })();
+</script>
+
+</html>

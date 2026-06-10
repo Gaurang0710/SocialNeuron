@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Brand Voice Learning{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="card" style="grid-column: span 2;">
+        <h3>Upload Past Company Posts</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Provide historical documents and posts. The AI will learn your company's tone and sentiment.
+        </p>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Document Name (e.g. 2025 Top LinkedIn Posts)" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); border-radius: 6px; margin-bottom: 1rem;">
+            <textarea name="document_content" rows="6" placeholder="Paste the text content here..." required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); border-radius: 6px; margin-bottom: 1rem;"></textarea>
+            <button type="submit" class="btn-primary">Train AI</button>
+        </form>
+    </div>
+</div>
+
+<h3 style="margin-bottom: 1rem;">Active Brand Voices</h3>
+<div style="display: grid; gap: 1rem;">
+    {% for voice in voices %}
+        <div class="card">
+            <h4><i class="fa-solid fa-check-circle" style="color: #10b981;"></i> {{ voice.name }}</h4>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;">Trained on {{ voice.created_at|date:"M d, Y" }}</p>
+        </div>
+    {% empty %}
+        <p style="color: var(--text-secondary);">No brand voice documents uploaded yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
