@@ -1,0 +1,27 @@
+{% extends 'public_base.html' %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto">
+    <div class="bg-white text-slate-900 rounded-3xl shadow-2xl shadow-indigo-950/30 border border-white/10 p-8">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">Signup</p>
+        <h1 class="text-3xl font-black mt-2">Create your account</h1>
+        <p class="text-sm text-slate-600 mt-2">Use a business email and start onboarding immediately.</p>
+        <form method="post" class="mt-6 space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Email</label>
+                <input type="email" name="email" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Password</label>
+                <input type="password" name="password" minlength="8" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Confirm Password</label>
+                <input type="password" name="confirm_password" minlength="8" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <button class="w-full rounded-xl bg-indigo-600 text-white font-semibold py-3 hover:bg-indigo-700">Sign up</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

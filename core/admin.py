@@ -1,10 +1,18 @@
 from django.contrib import admin
-from .models import BrandVoice, EmailRecipient, PlatformIntegration, PostSchedule
+from .models import BrandVoice, ContentItem, EmailRecipient, PlatformIntegration, PostSchedule
 
 @admin.register(PostSchedule)
 class PostScheduleAdmin(admin.ModelAdmin):
     list_display = ('topic', 'platform', 'category', 'status', 'date', 'priority')
     list_filter = ('status', 'platform', 'category', 'priority')
+    search_fields = ('topic', 'generated_content')
+    autocomplete_fields = ('user',)
+
+
+@admin.register(ContentItem)
+class ContentItemAdmin(admin.ModelAdmin):
+    list_display = ('topic', 'platform', 'post_type', 'status', 'created_at')
+    list_filter = ('status', 'platform', 'post_type')
     search_fields = ('topic', 'generated_content')
 
 

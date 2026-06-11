@@ -2,7 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.dashboard, name='dashboard'),
+    path('', views.home, name='home'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('signup/', views.signup_view, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('forgot-password/', views.forgot_password_view, name='forgot_password'),
+    path('reset-password/', views.reset_password_view, name='reset_password'),
+    path('logout/', views.logout_view, name='logout'),
+    path('onboarding/', views.onboarding_view, name='onboarding'),
     path('topic-generator/', views.generate_topics_view, name='generate_topics'),
     path('topic-generator/save/', views.save_generated_topic, name='save_generated_topic'),
     path('excel-upload/', views.upload_csv, name='upload_csv'),
@@ -13,6 +20,7 @@ urlpatterns = [
     path('review/<int:post_id>/reject/', views.reject_post, name='reject_post'),
     path('review/<int:post_id>/regenerate/', views.regenerate_post, name='regenerate_post'),
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
+    path('post/<int:post_id>/published/', views.mark_post_published, name='mark_post_published'),
     path('post/<int:post_id>/advanced-ai/<str:tool>/', views.advanced_ai_action, name='advanced_ai_action'),
     path('history/', views.history_view, name='history_view'),
     path('trigger-cron/', views.trigger_cron, name='trigger_cron'),

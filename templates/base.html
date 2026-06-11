@@ -171,6 +171,12 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                     Ollama Connected
                 </div>
+                {% if request.session.user_id %}
+                <a href="{% url 'logout' %}" class="text-sm font-semibold text-gray-600 hover:text-gray-900">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="text-sm font-semibold text-gray-600 hover:text-gray-900">Login</a>
+                <a href="{% url 'signup' %}" class="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl">Signup</a>
+                {% endif %}
             </div>
         </header>
 

@@ -133,7 +133,7 @@
                             class="text-xs bg-slate-100 border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono shrink-0">platform</code>
                         <div>
                             <p class="text-xs font-bold text-gray-700">Platform</p>
-                            <p class="text-[10px] text-gray-400">Defaults to LinkedIn</p>
+                            <p class="text-[10px] text-gray-400">LinkedIn, Instagram, TikTok, X, etc.</p>
                         </div>
                     </div>
                     {% elif col == "6" %}
@@ -145,13 +145,24 @@
                             <p class="text-[10px] text-gray-400">High, Medium, Low</p>
                         </div>
                     </div>
+                    {% elif col == "7" %}
+                    <div class="flex items-start gap-2.5">
+                        <code
+                            class="text-xs bg-slate-100 border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono shrink-0">post_type</code>
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Post Type</p>
+                            <p class="text-[10px] text-gray-400">Post, Reel, Story, Carousel, etc.</p>
+                        </div>
+                    </div>
                     {% endif %}
                     {% endfor %}
                 </div>
                 <div class="mt-3 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
                     <p class="text-[10px] text-red-600 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-asterisk text-[8px]"></i>
-                        Only <code class="bg-red-100 px-1 rounded font-mono">topic</code> column is required
+                        Only <code class="bg-red-100 px-1 rounded font-mono">topic</code> is required, but adding
+                        <code class="bg-red-100 px-1 rounded font-mono">platform</code> and <code class="bg-red-100 px-1 rounded font-mono">post_type</code>
+                        improves routing.
                     </p>
                 </div>
             </div>

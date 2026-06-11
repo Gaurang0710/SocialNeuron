@@ -7,7 +7,7 @@ from zipfile import ZipFile
 from core.models import PostSchedule
 
 
-def import_schedule_file(file_path):
+def import_schedule_file(file_path, user_id=None):
     if file_path.lower().endswith(("xls", "xlsx")):
         try:
             dataframe = pd.read_excel(file_path)
@@ -32,10 +32,12 @@ def import_schedule_file(file_path):
 
         PostSchedule.objects.create(
             date=scheduled_date,
+            user_id=user_id,
             topic=str(topic).strip(),
             tone=_clean_cell(row.get("tone"), "Professional"),
             category=_first_clean_cell([row.get("audience"), row.get("category")], "General"),
             platform=_clean_cell(row.get("platform"), "LinkedIn"),
+            post_type=_clean_cell(row.get("post_type"), _clean_cell(row.get("type"), "post")),
             priority=_clean_cell(row.get("priority"), "Medium"),
             status="draft",
         )

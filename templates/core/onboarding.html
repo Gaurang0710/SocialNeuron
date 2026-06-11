@@ -1,0 +1,41 @@
+{% extends 'public_base.html' %}
+{% block title %}Onboarding{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white text-slate-900 rounded-3xl shadow-2xl shadow-indigo-950/30 border border-white/10 p-8">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">Onboarding</p>
+        <h1 class="text-3xl font-black mt-2">Tell us about the brand</h1>
+        <p class="text-sm text-slate-600 mt-2">We’ll use these answers to generate your brand voice automatically.</p>
+        <form method="post" class="mt-6 grid md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <div class="md:col-span-2">
+                <label class="text-sm font-semibold text-slate-700">Brand name</label>
+                <input type="text" name="brand_name" value="{{ profile.brand_name|default:'' }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Niche</label>
+                <input type="text" name="niche" value="{{ profile.niche|default:'' }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Target audience</label>
+                <input type="text" name="target_audience" value="{{ profile.audience|default:'' }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Preferred platforms</label>
+                <input type="text" name="preferred_platforms" value="{% if profile and profile.platforms %}{{ profile.platforms|join:', ' }}{% else %}LinkedIn, X{% endif %}" placeholder="LinkedIn, X, Instagram" class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Writing tone</label>
+                <input type="text" name="writing_tone" value="{{ profile.tone|default:'Professional' }}" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div class="md:col-span-2">
+                <label class="text-sm font-semibold text-slate-700">Content goals</label>
+                <input type="text" name="content_goals" value="{% if profile and profile.goals %}{{ profile.goals|join:', ' }}{% else %}Build awareness, Drive leads{% endif %}" placeholder="Build awareness, Drive leads" class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div class="md:col-span-2">
+                <button class="w-full rounded-xl bg-indigo-600 text-white font-semibold py-3 hover:bg-indigo-700">Save onboarding profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

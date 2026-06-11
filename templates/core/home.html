@@ -1,0 +1,44 @@
+{% extends 'public_base.html' %}
+{% block title %}SocialNEURON · SaaS MVP{% endblock %}
+{% block content %}
+<div class="grid lg:grid-cols-2 gap-10 items-center">
+    <section class="space-y-6">
+        <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-indigo-200 bg-white/5 border border-white/10 px-3 py-2 rounded-full">
+            SaaS-ready MVP
+        </span>
+        <h2 class="text-5xl md:text-6xl font-black leading-tight">Turn one brand into a repeatable content engine.</h2>
+        <p class="text-slate-300 text-lg max-w-xl">
+            Sign up, complete onboarding, generate platform-specific content, review drafts, and keep every post isolated by user.
+        </p>
+        <div class="flex flex-wrap gap-3">
+            <a href="{% url 'signup' %}" class="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold px-5 py-3 rounded-xl">Create account</a>
+            <a href="{% url 'login' %}" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white font-semibold px-5 py-3 rounded-xl">Login</a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">01</p><p class="text-xs text-slate-300">Signup</p></div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">02</p><p class="text-xs text-slate-300">Onboard</p></div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">03</p><p class="text-xs text-slate-300">Generate</p></div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">04</p><p class="text-xs text-slate-300">Approve</p></div>
+        </div>
+    </section>
+
+    <aside class="lg:justify-self-end w-full max-w-xl bg-white text-slate-900 rounded-3xl shadow-2xl shadow-indigo-950/30 p-6">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">What you get</p>
+        <h3 class="text-2xl font-black mt-2">A clean workflow for multi-user content ops</h3>
+        <div class="mt-6 space-y-4">
+            <div class="border border-slate-200 rounded-2xl p-4">
+                <p class="font-bold">Brand-aware content</p>
+                <p class="text-sm text-slate-600">Onboarding answers feed brand voice automatically.</p>
+            </div>
+            <div class="border border-slate-200 rounded-2xl p-4">
+                <p class="font-bold">Draft approval workflow</p>
+                <p class="text-sm text-slate-600">Generated content stays in review until approved or rejected.</p>
+            </div>
+            <div class="border border-slate-200 rounded-2xl p-4">
+                <p class="font-bold">User isolation</p>
+                <p class="text-sm text-slate-600">Every query is scoped by user_id, so data stays private.</p>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}

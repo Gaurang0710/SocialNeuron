@@ -4,10 +4,22 @@ import re
 from .ai_client import ask_ollama
 
 
-def generate_topic_ideas(query, tone, audience):
+def generate_topic_ideas(query, tone, audience, platform=None, niche=None, goals=None, brand_voice=None, count=4):
+    voice_context = ""
+    if isinstance(brand_voice, dict):
+        voice_context = (
+            f" Brand voice summary: {brand_voice.get('voice_summary', '')}. "
+            f"Writing style: {brand_voice.get('writing_style', '')}. "
+            f"Tone rules: {', '.join(brand_voice.get('tone_rules', []))}. "
+            f"Content rules: {', '.join(brand_voice.get('content_rules', []))}."
+        )
+    platform_context = f" Platform: {platform}." if platform else ""
+    niche_context = f" Niche: {niche}." if niche else ""
+    goal_context = f" Goals: {', '.join(goals) if isinstance(goals, (list, tuple)) else goals}." if goals else ""
     prompt = (
-        f"Provide 4 high-converting LinkedIn topic ideas about: '{query}'. "
-        f"Audience: {audience}. Tone: {tone}. "
+        f"Provide {count} high-converting content topic ideas about: '{query}'. "
+        f"Audience: {audience}. Tone: {tone}.{platform_context}{niche_context}{goal_context}{voice_context} "
+        "Make the ideas platform-specific and avoid generic suggestions. "
         "Return only one topic per line as bullet points. Do not include an intro or explanation."
     )
     topics_text = ask_ollama(prompt)
@@ -17,7 +29,7 @@ def generate_topic_ideas(query, tone, audience):
 
     generated = []
     for text in topics_text.split("\n"):
-        if len(generated) >= 4:
+        if len(generated) >= count:
             break
         title = re.sub(r"^\s*(?:[-*•]|\d+[\).])\s*", "", text).strip()
         if title and len(title) > 3:
@@ -34,7 +46,7 @@ def generate_topic_ideas(query, tone, audience):
     if generated:
         return generated, None
 
-    return [
+    fallback = [
         {
             "title": "The Future of " + query,
             "score": 98,
@@ -49,14 +61,22 @@ def generate_topic_ideas(query, tone, audience):
             "tone": tone,
             "audience": audience,
         },
-    ], None
+    ]
+    return fallback[:count], None
 
 
-def create_post_content(post, brand_voices):
+def create_post_content(post, brand_voices, brand_voice=None):
     voice_context = "Use standard professional tone."
     if brand_voices.exists():
         combined_voice = " ".join([voice.document_content for voice in brand_voices])
         voice_context = f"Learn from this brand voice context: {combined_voice[:2000]}..."
+    if isinstance(brand_voice, dict):
+        voice_context = (
+            f"{voice_context} Brand voice summary: {brand_voice.get('voice_summary', '')}. "
+            f"Writing style: {brand_voice.get('writing_style', '')}. "
+            f"Tone rules: {', '.join(brand_voice.get('tone_rules', []))}. "
+            f"Content rules: {', '.join(brand_voice.get('content_rules', []))}."
+        )
 
     research_prompt = (
         f"Act as a professional Trend Research Agent for {post.category}. "

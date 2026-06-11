@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SocialNEURON{% endblock %}</title>
+    <meta name="description" content="AI social media automation for multi-user SaaS workflows.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="font-sans text-white bg-slate-950">
+    <div class="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(79,70,229,0.35),_transparent_35%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]">
+        <header class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+            <a href="{% url 'home' %}" class="space-y-1">
+                <p class="text-xs uppercase tracking-[0.3em] text-indigo-300 font-semibold">SocialNEURON</p>
+                <h1 class="text-lg font-black">AI Social Media Automation</h1>
+            </a>
+            <nav class="flex items-center gap-3">
+                {% if session_user %}
+                <a href="{% url 'dashboard' %}" class="text-sm font-semibold text-slate-200 hover:text-white">Dashboard</a>
+                <a href="{% url 'logout' %}" class="text-sm font-semibold bg-white text-slate-900 px-4 py-2 rounded-xl">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="text-sm font-semibold text-slate-200 hover:text-white">Login</a>
+                <a href="{% url 'signup' %}" class="text-sm font-semibold bg-white text-slate-900 px-4 py-2 rounded-xl">Get Started</a>
+                {% endif %}
+            </nav>
+        </header>
+
+        {% if messages %}
+        <div class="max-w-7xl mx-auto px-6 space-y-2">
+            {% for message in messages %}
+            <div class="rounded-xl border px-4 py-3 text-sm font-semibold {% if message.tags == 'error' %}bg-red-500/10 border-red-400/20 text-red-200{% else %}bg-emerald-500/10 border-emerald-400/20 text-emerald-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main class="max-w-7xl mx-auto px-6 py-12">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+
+</html>

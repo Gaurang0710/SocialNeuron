@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 class BrandVoice(models.Model):
     name = models.CharField(max_length=100)
@@ -39,10 +39,13 @@ class PostSchedule(models.Model):
     ]
 
     date = models.DateTimeField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
     topic = models.CharField(max_length=255)
     category = models.CharField(max_length=100)
     platform = models.CharField(max_length=100, default='LinkedIn')
+    post_type = models.CharField(max_length=100, default='post')
     priority = models.CharField(max_length=50, default='Medium')
+    published_link = models.URLField(blank=True, null=True)
     
     tone = models.CharField(max_length=50, blank=True, null=True)
     generated_content = models.TextField(blank=True, null=True)
@@ -61,9 +64,27 @@ class PostSchedule(models.Model):
     def __str__(self):
         return f"{self.topic} - {self.platform} ({self.status})"
 
+class ContentItem(models.Model):
+    STATUS_CHOICES = [
+        ('DRAFT', 'Draft'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='content_items')
+    topic = models.CharField(max_length=255)
+    platform = models.CharField(max_length=100)
+    post_type = models.CharField(max_length=100)
+    generated_content = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='DRAFT')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.topic} - {self.platform} ({self.status})"
+
 class PostComment(models.Model):
     post = models.ForeignKey(PostSchedule, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
