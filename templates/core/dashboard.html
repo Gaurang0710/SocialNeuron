@@ -116,19 +116,39 @@
                     style="width: {% if total %}{% widthratio published total 100 %}{% else %}0{% endif %}%"></div>
             </div>
         </div>
+        <!-- Verified Published -->
+        <div
+            class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col gap-3 hover:shadow-md hover:border-slate-200 transition-all duration-200 group">
+            <div
+                class="w-10 h-10 bg-slate-50 group-hover:bg-slate-100 rounded-xl flex items-center justify-center transition">
+                <i class="fa-solid fa-circle-check text-slate-500 text-sm"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide">Published Drafts</p>
+                <p class="text-3xl font-black text-slate-700 mt-0.5">{{ published }}</p>
+            </div>
+            <div class="h-1 bg-slate-100 rounded-full">
+                <div class="h-full bg-slate-500 rounded-full"
+                    style="width: {% if total %}{% widthratio published total 100 %}{% else %}0{% endif %}%"></div>
+            </div>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <div class="flex items-center justify-between gap-4 mb-5">
+        <div class="flex items-center justify-between gap-4">
             <div>
                 <h2 class="font-black text-gray-800 text-lg flex items-center gap-2">
                     <i class="fa-solid fa-lock text-indigo-500"></i>
-                    Change Password
+                    Account Security
                 </h2>
-                <p class="text-sm text-gray-500 mt-1">Update your login password from the dashboard.</p>
+                <p class="text-sm text-gray-500 mt-1">Change your password when needed.</p>
             </div>
+            <button type="button" onclick="document.getElementById('passwordPanel').classList.toggle('hidden')"
+                class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl transition">
+                <i class="fa-solid fa-key"></i> Change Password
+            </button>
         </div>
-        <form method="post" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form id="passwordPanel" method="post" class="hidden mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-100 pt-5">
             {% csrf_token %}
             <input type="hidden" name="action" value="change_password">
             <div>
@@ -144,8 +164,53 @@
                 <input type="password" name="confirm_password" required minlength="8" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
             <div class="md:col-span-3 flex justify-end">
-                <button class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-3 rounded-xl transition">
-                    <i class="fa-solid fa-key"></i> Save Password
+                <button class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-3 rounded-xl transition">
+                    <i class="fa-solid fa-check"></i> Update Password
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div class="flex items-center justify-between gap-4 mb-5">
+            <div>
+                <h2 class="font-black text-gray-800 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear text-emerald-500"></i>
+                    Brand Profile
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">Update the profile used for topic generation and drafting.</p>
+            </div>
+        </div>
+        <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_brand_profile">
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Brand Name</label>
+                <input type="text" name="brand_name" value="{{ brand_profile.brand_name|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Niche</label>
+                <input type="text" name="niche" value="{{ brand_profile.niche|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Target Audience</label>
+                <input type="text" name="target_audience" value="{{ brand_profile.audience|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Writing Tone</label>
+                <input type="text" name="writing_tone" value="{{ brand_profile.tone|default:'Professional' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div class="md:col-span-2">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Preferred Platforms</label>
+                <input type="text" name="preferred_platforms" value="{{ brand_profile.platforms|join:', '|default:'LinkedIn, Instagram' }}" placeholder="LinkedIn, Instagram, X" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div class="md:col-span-2">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Content Goals</label>
+                <input type="text" name="content_goals" value="{{ brand_profile.goals|join:', '|default:'Build awareness, Drive leads' }}" placeholder="Build awareness, Drive leads" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div class="md:col-span-2 flex justify-end">
+                <button class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3 rounded-xl transition">
+                    <i class="fa-solid fa-floppy-disk"></i> Update Brand Profile
                 </button>
             </div>
         </form>

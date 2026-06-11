@@ -13,6 +13,7 @@ urlpatterns = [
     path('topic-generator/', views.generate_topics_view, name='generate_topics'),
     path('topic-generator/save/', views.save_generated_topic, name='save_generated_topic'),
     path('excel-upload/', views.upload_csv, name='upload_csv'),
+    path('excel-upload/demo/', views.download_demo_excel, name='download_demo_excel'),
     path('email-integration/', views.email_integration, name='email_integration'),
     path('email-integration/<int:recipient_id>/toggle/', views.toggle_email_recipient, name='toggle_email_recipient'),
     path('review/', views.review_dashboard, name='review_dashboard'),

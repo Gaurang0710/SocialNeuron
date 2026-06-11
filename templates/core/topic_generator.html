@@ -204,6 +204,33 @@
         </form>
       </div>
 
+      <!-- Manual Topic -->
+      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+        <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-circle-plus text-emerald-500"></i>
+          Add Custom Topic
+        </h3>
+        <form method="post" action="{% url 'save_generated_topic' %}" class="space-y-3">
+          {% csrf_token %}
+          <input type="hidden" name="tone" value="Professional">
+          <input type="hidden" name="audience" value="General Network">
+          <input type="hidden" name="platform" value="LinkedIn">
+          <input type="hidden" name="post_type" value="post">
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Topic Idea</label>
+            <textarea name="title" rows="3" placeholder="Type any topic you want to create content for..."
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition resize-none"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="date" name="scheduled_date" value="{{ next_day }}" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <input type="time" name="scheduled_time" value="09:00" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-3 rounded-xl transition">
+            <i class="fa-solid fa-plus"></i> Save Custom Topic
+          </button>
+        </form>
+      </div>
+
       <!-- Stats Box -->
       <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white">
         <h3 class="font-bold text-sm mb-4 flex items-center gap-2 text-slate-200">

@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.core.validators import validate_email
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -26,6 +26,7 @@ from core.models import EmailRecipient, PostComment, PostSchedule
 from core.services.content_generation import generate_topic_ideas
 from core.services.schedule_import import import_schedule_file
 from core.tasks import generate_post_draft
+from demo.demo_calendar import export_demo_calendar_excel
 from users.onboarding import build_brand_voice, get_brand_profile, onboarding_payload_to_profile
 
 
@@ -202,7 +203,8 @@ def dashboard(request):
     if profile is None:
         return redirect("onboarding")
 
-    if request.method == "POST" and request.POST.get("action") == "change_password":
+    action = request.POST.get("action")
+    if request.method == "POST" and action == "change_password":
         old_password = request.POST.get("old_password", "")
         new_password = request.POST.get("new_password", "")
         confirm_password = request.POST.get("confirm_password", "")
@@ -214,6 +216,57 @@ def dashboard(request):
             messages.success(request, "Password changed successfully.")
         except Exception as exc:
             messages.error(request, str(exc))
+        return redirect("dashboard")
+    if request.method == "POST" and action == "add_custom_topic":
+        title = request.POST.get("topic", "").strip()
+        if not title:
+            messages.error(request, "Topic title is required.")
+            return redirect("dashboard")
+        scheduled_date = request.POST.get("scheduled_date", "").strip()
+        scheduled_time = request.POST.get("scheduled_time", "").strip()
+        scheduled_dt = timezone.now() + timedelta(days=1)
+        if scheduled_date:
+            try:
+                parsed_date = datetime.fromisoformat(scheduled_date)
+                if scheduled_time:
+                    hh, mm = [int(part) for part in scheduled_time.split(":", 1)]
+                    parsed_date = parsed_date.replace(hour=hh, minute=mm, second=0, microsecond=0)
+                scheduled_dt = timezone.make_aware(parsed_date) if timezone.is_naive(parsed_date) else parsed_date
+            except ValueError:
+                messages.error(request, "Invalid schedule date or time.")
+                return redirect("dashboard")
+        PostSchedule.objects.create(
+            user_id=user.id,
+            date=scheduled_dt,
+            topic=title,
+            tone=request.POST.get("tone") or "Professional",
+            category=request.POST.get("audience") or "General",
+            platform=request.POST.get("platform") or "LinkedIn",
+            post_type=request.POST.get("post_type") or "post",
+            priority="Medium",
+            status="draft",
+        )
+        messages.success(request, "Custom topic added to your draft queue.")
+        return redirect("dashboard")
+    if request.method == "POST" and action == "update_brand_profile":
+        payload = {
+            "brand_name": request.POST.get("brand_name", ""),
+            "niche": request.POST.get("niche", ""),
+            "target_audience": request.POST.get("target_audience", ""),
+            "preferred_platforms": request.POST.getlist("preferred_platforms") or [
+                item.strip() for item in request.POST.get("preferred_platforms", "").split(",") if item.strip()
+            ],
+            "writing_tone": request.POST.get("writing_tone", ""),
+            "content_goals": request.POST.getlist("content_goals") or [
+                item.strip() for item in request.POST.get("content_goals", "").split(",") if item.strip()
+            ],
+        }
+        if not payload["preferred_platforms"]:
+            payload["preferred_platforms"] = ["LinkedIn"]
+        if not payload["content_goals"]:
+            payload["content_goals"] = ["Build audience", "Generate leads"]
+        onboarding_payload_to_profile(user.id, payload)
+        messages.success(request, "Brand profile updated.")
         return redirect("dashboard")
 
     posts = PostSchedule.objects.filter(user_id=user.id)
@@ -228,6 +281,7 @@ def dashboard(request):
         "recent": posts.order_by("-updated_at")[:5],
         "profile": profile,
         "brand_voice": build_brand_voice(profile),
+        "brand_profile": profile,
     }
     return render(request, "core/dashboard.html", context)
 
@@ -263,8 +317,8 @@ def generate_topics_view(request):
             count=count,
         )
         if error:
-            return render(request, "core/partials/topic_results.html", {"topics": [], "error": error})
-        return render(request, "core/partials/topic_results.html", {"topics": generated})
+            return render(request, "core/partials/topic_results.html", {"topics": [], "error": error, "next_day": (timezone.localdate() + timedelta(days=1)).isoformat()})
+        return render(request, "core/partials/topic_results.html", {"topics": generated, "next_day": (timezone.localdate() + timedelta(days=1)).isoformat()})
 
     posts = PostSchedule.objects.filter(user_id=user.id)
     return render(
@@ -276,6 +330,7 @@ def generate_topics_view(request):
             "approved_count": posts.filter(status="approved").count(),
             "published_count": posts.filter(status="published").count(),
             "profile": profile,
+            "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
         },
     )
 
@@ -294,9 +349,23 @@ def save_generated_topic(request):
         messages.error(request, "Topic title is required.")
         return redirect("generate_topics")
 
+    scheduled_date = request.POST.get("scheduled_date", "").strip()
+    scheduled_time = request.POST.get("scheduled_time", "").strip()
+    scheduled_dt = timezone.now() + timedelta(days=1)
+    if scheduled_date:
+        try:
+            parsed_date = datetime.fromisoformat(scheduled_date)
+            if scheduled_time:
+                hh, mm = [int(part) for part in scheduled_time.split(":", 1)]
+                parsed_date = parsed_date.replace(hour=hh, minute=mm, second=0, microsecond=0)
+            scheduled_dt = timezone.make_aware(parsed_date) if timezone.is_naive(parsed_date) else parsed_date
+        except ValueError:
+            messages.error(request, "Invalid schedule date or time.")
+            return redirect("generate_topics")
+
     PostSchedule.objects.create(
         user_id=user.id,
-        date=timezone.now() + timedelta(days=1),
+        date=scheduled_dt,
         topic=title,
         tone=request.POST.get("tone") or "Professional",
         category=request.POST.get("audience") or "General",
@@ -327,6 +396,12 @@ def upload_csv(request):
             messages.error(request, f"Upload failed: {exc}")
         return redirect("dashboard")
     return render(request, "core/upload.html")
+
+
+def download_demo_excel(request):
+    """Generate and stream a demo spreadsheet on demand."""
+    path = export_demo_calendar_excel()
+    return FileResponse(open(path, "rb"), as_attachment=True, filename="demo_calendar.xlsx")
 
 
 def email_integration(request):
@@ -519,6 +594,9 @@ def mark_post_published(request, post_id):
         published_link = request.POST.get("published_link", "").strip()
         if not published_link:
             messages.error(request, "Published link is required for verification.")
+            return redirect("post_detail", post_id=post.id)
+        if not (published_link.startswith("http://") or published_link.startswith("https://")):
+            messages.error(request, "Please enter a valid live URL.")
             return redirect("post_detail", post_id=post.id)
         post.published_link = published_link
         post.status = "published"

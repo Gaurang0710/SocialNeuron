@@ -122,6 +122,10 @@
                                 <input type="hidden" name="tone" value="{{ t.tone }}">
                                 <input type="hidden" name="audience" value="{{ t.audience }}">
                                 <input type="hidden" name="post_type" value="post">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                                    <input type="date" name="scheduled_date" value="{{ next_day|default:'' }}" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <input type="time" name="scheduled_time" value="09:00" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
                                 <button type="submit"
                                     class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md shadow-indigo-200 hover:shadow-indigo-300 transition transform hover:scale-105 flex items-center justify-center gap-1.5 whitespace-nowrap">
                                     <i class="fa-solid fa-plus"></i> Send to Drafts
