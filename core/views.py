@@ -286,6 +286,62 @@ def dashboard(request):
     return render(request, "core/dashboard.html", context)
 
 
+def dashboard_settings(request):
+    """Dedicated settings page for password and brand profile updates."""
+    user = _require_user(request)
+    if user is None:
+        return redirect("login")
+
+    profile = _require_profile(request, user)
+    if profile is None:
+        return redirect("onboarding")
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "change_password":
+            old_password = request.POST.get("old_password", "")
+            new_password = request.POST.get("new_password", "")
+            confirm_password = request.POST.get("confirm_password", "")
+            if new_password != confirm_password:
+                messages.error(request, "New passwords do not match.")
+            else:
+                try:
+                    change_password(user.id, old_password, new_password)
+                    messages.success(request, "Password changed successfully.")
+                    return redirect("dashboard_settings")
+                except Exception as exc:
+                    messages.error(request, str(exc))
+        elif action == "update_brand_profile":
+            payload = {
+                "brand_name": request.POST.get("brand_name", ""),
+                "niche": request.POST.get("niche", ""),
+                "target_audience": request.POST.get("target_audience", ""),
+                "preferred_platforms": request.POST.getlist("preferred_platforms") or [
+                    item.strip() for item in request.POST.get("preferred_platforms", "").split(",") if item.strip()
+                ],
+                "writing_tone": request.POST.get("writing_tone", ""),
+                "content_goals": request.POST.getlist("content_goals") or [
+                    item.strip() for item in request.POST.get("content_goals", "").split(",") if item.strip()
+                ],
+            }
+            if not payload["preferred_platforms"]:
+                payload["preferred_platforms"] = ["LinkedIn"]
+            if not payload["content_goals"]:
+                payload["content_goals"] = ["Build audience", "Generate leads"]
+            onboarding_payload_to_profile(user.id, payload)
+            messages.success(request, "Brand profile updated.")
+            return redirect("dashboard_settings")
+
+    return render(
+        request,
+        "core/dashboard_settings.html",
+        {
+            "profile": profile,
+            "brand_voice": build_brand_voice(profile),
+        },
+    )
+
+
 def generate_topics_view(request):
     """Generate user-specific topic ideas."""
     user = _require_user(request)

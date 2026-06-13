@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Workspace Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto flex flex-col gap-6">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-7 text-white shadow-2xl">
+        <div class="pointer-events-none absolute -top-10 -right-10 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.3em] text-indigo-200">Settings</p>
+                <h1 class="text-3xl font-black tracking-tight mt-2">Workspace Settings</h1>
+                <p class="text-slate-300 text-sm mt-2 max-w-2xl">Keep your password and brand profile in sync with the content workflow.</p>
+            </div>
+            <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/15 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+        <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div class="flex items-center justify-between gap-4 mb-5">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-500">Security</p>
+                    <h2 class="font-black text-gray-900 text-xl mt-1">Change Password</h2>
+                </div>
+            </div>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_password">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Current Password</label>
+                    <input type="password" name="old_password" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">New Password</label>
+                    <input type="password" name="new_password" required minlength="8" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Confirm New Password</label>
+                    <input type="password" name="confirm_password" required minlength="8" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-3 rounded-xl transition">
+                    <i class="fa-solid fa-check"></i> Update Password
+                </button>
+            </form>
+        </section>
+
+        <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div class="flex items-center justify-between gap-4 mb-5">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-emerald-500">Brand</p>
+                    <h2 class="font-black text-gray-900 text-xl mt-1">Brand Profile</h2>
+                </div>
+            </div>
+            <form method="post" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_brand_profile">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Brand Name</label>
+                    <input type="text" name="brand_name" value="{{ profile.brand_name|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Niche</label>
+                    <input type="text" name="niche" value="{{ profile.niche|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Target Audience</label>
+                    <input type="text" name="target_audience" value="{{ profile.audience|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Writing Tone</label>
+                    <input type="text" name="writing_tone" value="{{ profile.tone|default:'Professional' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Preferred Platforms</label>
+                    <input type="text" name="preferred_platforms" value="{{ profile.platforms|join:', '|default:'LinkedIn, Instagram' }}" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Content Goals</label>
+                    <input type="text" name="content_goals" value="{{ profile.goals|join:', '|default:'Build awareness, Drive leads' }}" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="sm:col-span-2 flex justify-end">
+                    <button class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3 rounded-xl transition">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Brand Profile
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p class="text-xs font-bold uppercase tracking-wide text-gray-400">Tone</p>
+            <p class="mt-2 text-lg font-black text-gray-900">{{ profile.tone|default:"Professional" }}</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p class="text-xs font-bold uppercase tracking-wide text-gray-400">Platforms</p>
+            <p class="mt-2 text-lg font-black text-gray-900">{{ profile.platforms|join:", "|default:"LinkedIn" }}</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p class="text-xs font-bold uppercase tracking-wide text-gray-400">Voice Summary</p>
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">{{ brand_voice.voice_summary }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

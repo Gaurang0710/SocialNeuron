@@ -34,14 +34,29 @@
         </div>
     </div>
 
+    <!-- ═══ Quick Stats ═══ -->
+    <div class="grid sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p class="text-xs font-bold uppercase tracking-wide text-gray-400">Published</p>
+            <p class="mt-2 text-3xl font-black text-gray-900">{{ published.count }}</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p class="text-xs font-bold uppercase tracking-wide text-gray-400">Latest</p>
+            <p class="mt-2 text-sm font-semibold text-gray-700">{% if published %}{{ published.0.date|date:"M d, Y" }}{% else %}—{% endif %}</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <p class="text-xs font-bold uppercase tracking-wide text-gray-400">Primary Platform</p>
+            <p class="mt-2 text-sm font-semibold text-gray-700">{% if published %}{{ published.0.platform }}{% else %}—{% endif %}</p>
+        </div>
+    </div>
+
     <!-- ═══ Content ═══ -->
     {% if published %}
     <!-- Table View -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h2 class="font-black text-gray-800 flex items-center gap-2">
-<!--                <i class="fa-brands fa-linkedin text-blue-600"></i> -->
-                Published Posts
+                <i class="fa-solid fa-layer-group text-purple-500"></i> Published Posts
             </h2>
             <span class="text-xs text-gray-400 font-medium">Sorted by most recent</span>
         </div>

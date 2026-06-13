@@ -172,7 +172,7 @@
 <!--                    Ollama Connected-->
 <!--                </div>-->
                 {% if request.session.user_id %}
-                <a href="{% url 'dashboard' %}#dashboard-settings" class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50" title="Settings">
+                <a href="{% url 'dashboard_settings' %}" class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-50" title="Settings">
                     <i class="fa-solid fa-gear"></i>
                 </a>
                 <a href="{% url 'logout' %}" class="text-sm font-semibold text-gray-600 hover:text-gray-900">Logout</a>

@@ -134,87 +134,18 @@
         </div>
     </div>
 
-    <div id="dashboard-settings" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <div class="flex items-center justify-between gap-4">
-            <div>
-                <h2 class="font-black text-gray-800 text-lg flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-indigo-500"></i>
-                    Account Security
-                </h2>
-                <p class="text-sm text-gray-500 mt-1">Change your password when needed.</p>
-            </div>
-            <button type="button" onclick="document.getElementById('passwordPanel').classList.toggle('hidden')"
-                class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl transition">
-                <i class="fa-solid fa-key"></i> Change Password
-            </button>
-        </div>
-        <form id="passwordPanel" method="post" class="hidden mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-100 pt-5">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="change_password">
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Current Password</label>
-                <input type="password" name="old_password" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">New Password</label>
-                <input type="password" name="new_password" required minlength="8" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Confirm New Password</label>
-                <input type="password" name="confirm_password" required minlength="8" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div class="md:col-span-3 flex justify-end">
-                <button class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-3 rounded-xl transition">
-                    <i class="fa-solid fa-check"></i> Update Password
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-        <div class="flex items-center justify-between gap-4 mb-5">
-            <div>
-                <h2 class="font-black text-gray-800 text-lg flex items-center gap-2">
-                    <i class="fa-solid fa-user-gear text-emerald-500"></i>
-                    Brand Profile
-                </h2>
-                <p class="text-sm text-gray-500 mt-1">Update the profile used for topic generation and drafting.</p>
-            </div>
-        </div>
-        <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="update_brand_profile">
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Brand Name</label>
-                <input type="text" name="brand_name" value="{{ brand_profile.brand_name|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Niche</label>
-                <input type="text" name="niche" value="{{ brand_profile.niche|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Target Audience</label>
-                <input type="text" name="target_audience" value="{{ brand_profile.audience|default:'' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Writing Tone</label>
-                <input type="text" name="writing_tone" value="{{ brand_profile.tone|default:'Professional' }}" required class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div class="md:col-span-2">
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Preferred Platforms</label>
-                <input type="text" name="preferred_platforms" value="{{ brand_profile.platforms|join:', '|default:'LinkedIn, Instagram' }}" placeholder="LinkedIn, Instagram, X" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div class="md:col-span-2">
-                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Content Goals</label>
-                <input type="text" name="content_goals" value="{{ brand_profile.goals|join:', '|default:'Build awareness, Drive leads' }}" placeholder="Build awareness, Drive leads" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div class="md:col-span-2 flex justify-end">
-                <button class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3 rounded-xl transition">
-                    <i class="fa-solid fa-floppy-disk"></i> Update Brand Profile
-                </button>
-            </div>
-        </form>
-    </div>
+<!--    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">-->
+<!--        <div>-->
+<!--            <h2 class="font-black text-gray-800 text-lg flex items-center gap-2">-->
+<!--                <i class="fa-solid fa-gear text-indigo-500"></i>-->
+<!--                Workspace Settings-->
+<!--            </h2>-->
+<!--            <p class="text-sm text-gray-500 mt-1">Update password and brand profile in a dedicated settings page.</p>-->
+<!--        </div>-->
+<!--        <a href="{% url 'dashboard_settings' %}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl transition">-->
+<!--            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Settings-->
+<!--        </a>-->
+<!--    </div>-->
 
     <!-- ═══ Main Grid ═══ -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
