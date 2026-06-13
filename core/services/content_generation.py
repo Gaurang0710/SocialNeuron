@@ -4,7 +4,15 @@ import re
 from .ai_client import ask_ollama
 
 
-def generate_topic_ideas(query, tone, audience, platform=None, niche=None, goals=None, brand_voice=None, count=4):
+def _strip_markdown(text: str) -> str:
+    cleaned = re.sub(r"(?m)^\s*[*_]{3,}\s*$", "", text)
+    cleaned = re.sub(r"\*\*(.*?)\*\*", r"\1", cleaned)
+    cleaned = re.sub(r"(?m)^\s*[-*•]\s*$", "", cleaned)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    return cleaned.strip()
+
+
+def generate_topic_ideas(query, tone, audience, platform=None, post_type=None, niche=None, goals=None, brand_voice=None, count=4):
     voice_context = ""
     if isinstance(brand_voice, dict):
         voice_context = (
@@ -14,12 +22,13 @@ def generate_topic_ideas(query, tone, audience, platform=None, niche=None, goals
             f"Content rules: {', '.join(brand_voice.get('content_rules', []))}."
         )
     platform_context = f" Platform: {platform}." if platform else ""
+    content_type_context = f" Content type: {post_type}." if post_type else ""
     niche_context = f" Niche: {niche}." if niche else ""
     goal_context = f" Goals: {', '.join(goals) if isinstance(goals, (list, tuple)) else goals}." if goals else ""
     prompt = (
         f"Provide {count} high-converting content topic ideas about: '{query}'. "
-        f"Audience: {audience}. Tone: {tone}.{platform_context}{niche_context}{goal_context}{voice_context} "
-        "Make the ideas platform-specific and avoid generic suggestions. "
+        f"Audience: {audience}. Tone: {tone}.{platform_context}{content_type_context}{niche_context}{goal_context}{voice_context} "
+        "Make the ideas platform- and content-type-specific and avoid generic suggestions. "
         "Return only one topic per line as bullet points. Do not include an intro or explanation."
     )
     topics_text = ask_ollama(prompt)
@@ -96,6 +105,7 @@ def create_post_content(post, brand_voices, brand_voice=None):
         "Act as a Review & Optimization Agent. Fix grammar, improve readability, "
         f"optimize for {post.platform}."
         f"\n\nDraft:\n{draft_content}\n\n"
-        "Return ONLY the optimized final post."
+        "Return ONLY the optimized final post. Do not add markdown emphasis or divider lines."
     )
-    return ask_ollama(review_prompt).strip()
+    final_content = ask_ollama(review_prompt).strip()
+    return _strip_markdown(final_content)

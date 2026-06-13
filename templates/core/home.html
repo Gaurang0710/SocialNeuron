@@ -41,4 +41,50 @@
         </div>
     </aside>
 </div>
+
+<section class="mt-20 grid md:grid-cols-2 gap-6">
+    <div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-sm">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">Services</p>
+        <h3 class="text-2xl font-black mt-2">Built for content teams that need speed and control</h3>
+        <div class="mt-5 space-y-4 text-slate-200">
+            <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-indigo-300"></i></div>
+                <div>
+                    <p class="font-semibold">AI topic generation</p>
+                    <p class="text-sm text-slate-300">Create platform-aware ideas with tone and audience context.</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-clipboard-check text-emerald-300"></i></div>
+                <div>
+                    <p class="font-semibold">Review workflow</p>
+                    <p class="text-sm text-slate-300">Keep drafts, approvals, and publishing verification in one place.</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-cloud-arrow-up text-purple-300"></i></div>
+                <div>
+                    <p class="font-semibold">Bulk scheduling</p>
+                    <p class="text-sm text-slate-300">Import content plans from Excel or create them manually.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white text-slate-900 rounded-3xl p-6 shadow-2xl shadow-indigo-950/20">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">Contact</p>
+        <h3 class="text-2xl font-black mt-2">Talk to us about your workflow</h3>
+        <p class="text-sm text-slate-600 mt-2">If you want onboarding, integrations, or a custom publishing flow, this is the right place to start.</p>
+        <div class="mt-6 grid gap-3">
+            <div class="rounded-2xl border border-slate-200 p-4">
+                <p class="text-xs font-bold uppercase text-slate-500">Email</p>
+                <p class="font-semibold">support@socialneuron.ai</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-4">
+                <p class="text-xs font-bold uppercase text-slate-500">Office hours</p>
+                <p class="font-semibold">Mon - Fri, 9:00 AM - 6:00 PM IST</p>
+            </div>
+        </div>
+        <a href="{% url 'signup' %}" class="mt-6 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-3 rounded-xl">Start a project</a>
+    </div>
+</section>
 {% endblock %}

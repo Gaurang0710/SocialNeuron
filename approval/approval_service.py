@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.db import transaction
 
 from auth.auth_service import get_user_by_id
-from core.models import ContentItem
+from core.models import ContentItem, EmailRecipient
 
 logger = logging.getLogger(__name__)
 
@@ -37,8 +37,15 @@ def notify_content_ready(user_id: int, content_item: ContentItem) -> bool:
         f"Generated content:\n{content_item.generated_content}\n\n"
         f"Current status: {content_item.status}"
     )
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
-    logger.info("Sent review email to %s for content_id=%s", user.email, content_item.id)
+    recipient_emails = list(
+        EmailRecipient.objects.filter(is_active=True).values_list("email", flat=True)
+    )
+    if user.email not in recipient_emails:
+        recipient_emails.append(user.email)
+    if not recipient_emails:
+        recipient_emails = [settings.DEMO_RECIPIENT_EMAIL]
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_emails, fail_silently=False)
+    logger.info("Sent review email to %s for content_id=%s", ", ".join(recipient_emails), content_item.id)
     return True
 
 

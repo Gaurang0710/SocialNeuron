@@ -10,7 +10,7 @@
     <div class="pointer-events-none absolute -top-10 -right-10 w-72 h-72 bg-purple-600 opacity-20 rounded-full blur-3xl"></div>
     <div class="pointer-events-none absolute bottom-0 left-32 w-40 h-40 bg-indigo-500 opacity-20 rounded-full blur-2xl"></div>
 
-    <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <div class="flex items-center gap-3 mb-2">
           <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-sm">
@@ -30,6 +30,12 @@
         </a>
         <a href="{% url 'review_dashboard' %}" class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition shadow-lg shadow-indigo-900/50">
           <i class="fa-solid fa-tasks"></i> Review Center
+        </a>
+      </div>
+
+      <div class="relative z-10 mt-4">
+        <a href="{% url 'manual_topic' %}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition backdrop-blur-sm">
+          <i class="fa-solid fa-circle-plus text-emerald-300"></i> Add New Topic
         </a>
       </div>
     </div>
@@ -151,7 +157,7 @@
           </div>
 
           <!-- Tone + Audience -->
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Brand Tone</label>
               <div class="relative">
@@ -183,6 +189,27 @@
             </div>
           </div>
 
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Platform</label>
+              <select name="platform"
+                class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                {% for p in platform_choices %}
+                <option value="{{ p }}" {% if p == 'LinkedIn' %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Content Type</label>
+              <select name="post_type"
+                class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                {% for t in post_type_choices %}
+                <option value="{{ t }}" {% if t == 'Post' %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
           <!-- Count Slider -->
           <div>
             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
@@ -200,33 +227,6 @@
           <button type="submit" id="generateBtn"
             class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 rounded-xl py-3.5 font-bold flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 active:scale-95 text-sm">
             <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Topic Ideas
-          </button>
-        </form>
-      </div>
-
-      <!-- Manual Topic -->
-      <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-circle-plus text-emerald-500"></i>
-          Add Custom Topic
-        </h3>
-        <form method="post" action="{% url 'save_generated_topic' %}" class="space-y-3">
-          {% csrf_token %}
-          <input type="hidden" name="tone" value="Professional">
-          <input type="hidden" name="audience" value="General Network">
-          <input type="hidden" name="platform" value="LinkedIn">
-          <input type="hidden" name="post_type" value="post">
-          <div>
-            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Topic Idea</label>
-            <textarea name="title" rows="3" placeholder="Type any topic you want to create content for..."
-              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition resize-none"></textarea>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <input type="date" name="scheduled_date" value="{{ next_day }}" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <input type="time" name="scheduled_time" value="09:00" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
-          </div>
-          <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-3 rounded-xl transition">
-            <i class="fa-solid fa-plus"></i> Save Custom Topic
           </button>
         </form>
       </div>

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Add Manual Topic{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f172a] via-[#111827] to-[#1f2937] p-7 text-white shadow-2xl">
+        <div class="pointer-events-none absolute -top-10 -right-10 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl"></div>
+        <div class="relative z-10 flex flex-col gap-3">
+            <p class="text-xs font-bold uppercase tracking-[0.3em] text-emerald-200">Manual Topic</p>
+            <h1 class="text-3xl font-black">Add a custom topic</h1>
+            <p class="text-slate-300 text-sm max-w-2xl">Use this when you already know the topic idea and want to push it directly into the draft queue with platform and content type.</p>
+        </div>
+    </div>
+
+    <div class="mt-6 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Platform</label>
+                    <select name="platform" class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        {% for p in platform_choices %}
+                        <option value="{{ p }}" {% if p == 'LinkedIn' %}selected{% endif %}>{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Content Type</label>
+                    <select name="post_type" class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                        {% for t in post_type_choices %}
+                        <option value="{{ t }}" {% if t == 'Post' %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Topic Idea</label>
+                <textarea name="title" rows="4" placeholder="Type your topic here..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition resize-none" required></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input type="date" name="scheduled_date" value="{{ next_day }}" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <input type="time" name="scheduled_time" value="09:00" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <input type="hidden" name="tone" value="{{ profile.tone|default:'Professional' }}">
+            <input type="hidden" name="audience" value="{{ profile.audience|default:'General' }}">
+            <div class="flex items-center justify-between gap-3">
+                <a href="{% url 'generate_topics' %}" class="text-sm font-semibold text-gray-500 hover:text-gray-800">Back to generator</a>
+                <button type="submit" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3 rounded-xl transition">
+                    <i class="fa-solid fa-plus"></i> Save Topic
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

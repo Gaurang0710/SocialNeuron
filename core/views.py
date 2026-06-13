@@ -301,6 +301,7 @@ def generate_topics_view(request):
         tone = request.POST.get("tone", profile.tone or "Professional")
         audience = request.POST.get("audience", profile.audience or "General audience")
         platform = request.POST.get("platform", (profile.platforms or ["LinkedIn"])[0])
+        post_type = request.POST.get("post_type", "post")
         count_raw = request.POST.get("count", "4")
         try:
             count = max(1, min(8, int(count_raw)))
@@ -311,6 +312,7 @@ def generate_topics_view(request):
             tone,
             audience,
             platform=platform,
+            post_type=post_type,
             niche=profile.niche,
             goals=profile.goals,
             brand_voice=build_brand_voice(profile),
@@ -331,6 +333,63 @@ def generate_topics_view(request):
             "published_count": posts.filter(status="published").count(),
             "profile": profile,
             "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
+            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook", "TikTok"],
+            "post_type_choices": ["Post", "Reel", "Carousel", "Story", "Thread", "Short"],
+        },
+    )
+
+
+def manual_topic_view(request):
+    """Create a custom topic on a dedicated page."""
+    user = _require_user(request)
+    if user is None:
+        return redirect("login")
+
+    profile = _require_profile(request, user)
+    if profile is None:
+        return redirect("onboarding")
+
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        if not title:
+            messages.error(request, "Topic title is required.")
+            return redirect("manual_topic")
+        scheduled_date = request.POST.get("scheduled_date", "").strip()
+        scheduled_time = request.POST.get("scheduled_time", "").strip()
+        scheduled_dt = timezone.now() + timedelta(days=1)
+        if scheduled_date:
+            try:
+                parsed_date = datetime.fromisoformat(scheduled_date)
+                if scheduled_time:
+                    hh, mm = [int(part) for part in scheduled_time.split(":", 1)]
+                    parsed_date = parsed_date.replace(hour=hh, minute=mm, second=0, microsecond=0)
+                scheduled_dt = timezone.make_aware(parsed_date) if timezone.is_naive(parsed_date) else parsed_date
+            except ValueError:
+                messages.error(request, "Invalid schedule date or time.")
+                return redirect("manual_topic")
+
+        PostSchedule.objects.create(
+            user_id=user.id,
+            date=scheduled_dt,
+            topic=title,
+            tone=request.POST.get("tone") or profile.tone or "Professional",
+            category=request.POST.get("audience") or profile.audience or "General",
+            platform=request.POST.get("platform") or (profile.platforms[0] if profile.platforms else "LinkedIn"),
+            post_type=request.POST.get("post_type") or "post",
+            priority="Medium",
+            status="draft",
+        )
+        messages.success(request, "Custom topic added to your draft queue.")
+        return redirect("dashboard")
+
+    return render(
+        request,
+        "core/manual_topic.html",
+        {
+            "profile": profile,
+            "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
+            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook", "TikTok"],
+            "post_type_choices": ["Post", "Reel", "Carousel", "Story", "Thread", "Short"],
         },
     )
 
@@ -458,6 +517,18 @@ def email_integration(request):
     )
 
 
+def delete_email_recipient(request, recipient_id):
+    """Delete an email recipient from the alert list."""
+    user = _require_user(request)
+    if user is None:
+        return redirect("login")
+
+    recipient = get_object_or_404(EmailRecipient, id=recipient_id)
+    recipient.delete()
+    messages.success(request, "Recipient deleted.")
+    return redirect("email_integration")
+
+
 def toggle_email_recipient(request, recipient_id):
     """Toggle email recipient status."""
     user = _require_user(request)
@@ -549,7 +620,7 @@ def trigger_cron(request):
 
     generated_count = 0
     for scheduled_post in due_posts:
-        if scheduled_post.status == "draft":
+        if scheduled_post.status == "draft" and not scheduled_post.generated_content:
             if generate_post_draft(scheduled_post.id):
                 generated_count += 1
 

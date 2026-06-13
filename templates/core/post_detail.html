@@ -89,8 +89,8 @@
                         <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
                             <circle cx="28" cy="28" r="22" stroke="#fed7aa" stroke-width="5" fill="none" />
                             <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
-                                stroke-dashoffset="{{ post.engagement_score }}" stroke="#f97316" stroke-width="5"
-                                stroke-linecap="round" fill="none" />
+                                style="stroke-dashoffset: calc(138.2 - (138.2 * {{ post.engagement_score }} / 100));"
+                                stroke="#f97316" stroke-width="5" stroke-linecap="round" fill="none" />
                         </svg>
                         <span
                             class="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-800">{{ post.engagement_score }}</span>
@@ -104,8 +104,8 @@
                         <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
                             <circle cx="28" cy="28" r="22" stroke="#bfdbfe" stroke-width="5" fill="none" />
                             <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
-                                stroke-dashoffset="{{ post.readability_score }}" stroke="#3b82f6" stroke-width="5"
-                                stroke-linecap="round" fill="none" />
+                                style="stroke-dashoffset: calc(138.2 - (138.2 * {{ post.readability_score }} / 100));"
+                                stroke="#3b82f6" stroke-width="5" stroke-linecap="round" fill="none" />
                         </svg>
                         <span
                             class="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-800">{{ post.readability_score }}</span>
@@ -119,8 +119,8 @@
                         <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
                             <circle cx="28" cy="28" r="22" stroke="#e9d5ff" stroke-width="5" fill="none" />
                             <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
-                                stroke-dashoffset="{{ post.virality_score }}" stroke="#a855f7" stroke-width="5"
-                                stroke-linecap="round" fill="none" />
+                                style="stroke-dashoffset: calc(138.2 - (138.2 * {{ post.virality_score }} / 100));"
+                                stroke="#a855f7" stroke-width="5" stroke-linecap="round" fill="none" />
                         </svg>
                         <span
                             class="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-800">{{ post.virality_score }}</span>
@@ -304,11 +304,11 @@
                     <div class="flex items-start gap-2.5">
                         <div
                             class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-black shrink-0">
-                            {{ comment.user|default:"T"|first|upper }}
+                            {% if comment.user %}{{ comment.user.email|default:"T"|slice:":1"|upper }}{% else %}T{% endif %}
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5 mb-0.5">
-                                <span class="text-xs font-bold text-gray-700">{{ comment.user|default:"Team Member" }}</span>
+                                <span class="text-xs font-bold text-gray-700">{% if comment.user %}{{ comment.user.email }}{% else %}Team Member{% endif %}</span>
                                 <span class="text-[10px] text-gray-400">{{ comment.created_at|date:"M d, H:i" }}</span>
                             </div>
                             <div

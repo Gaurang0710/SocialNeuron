@@ -60,12 +60,12 @@
             <div class="divide-y divide-gray-100">
                 {% for recipient in recipients %}
                 <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-gray-50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center {% if recipient.is_active %}bg-cyan-100 text-cyan-700{% else %}bg-gray-100 text-gray-400{% endif %}">
-                            <i class="fa-solid fa-envelope"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900">{{ recipient.email }}</div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center {% if recipient.is_active %}bg-cyan-100 text-cyan-700{% else %}bg-gray-100 text-gray-400{% endif %}">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-900">{{ recipient.email }}</div>
                             <div class="text-xs text-gray-500">
                                 {{ recipient.name|default:"No label" }} · Added {{ recipient.created_at|date:"M d, Y" }}
                             </div>
@@ -75,9 +75,17 @@
                         <span class="text-xs font-black px-2.5 py-1 rounded-full {% if recipient.is_active %}bg-emerald-100 text-emerald-700{% else %}bg-gray-100 text-gray-500{% endif %}">
                             {% if recipient.is_active %}Active{% else %}Disabled{% endif %}
                         </span>
-                        <a href="{% url 'toggle_email_recipient' recipient.id %}" class="text-xs font-bold px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 text-gray-600">
-                            {% if recipient.is_active %}Disable{% else %}Enable{% endif %}
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <a href="{% url 'toggle_email_recipient' recipient.id %}" class="text-xs font-bold px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 text-gray-600">
+                                {% if recipient.is_active %}Disable{% else %}Enable{% endif %}
+                            </a>
+                            <form method="post" action="{% url 'delete_email_recipient' recipient.id %}" onsubmit="return confirm('Delete this recipient?');">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs font-bold px-3 py-2 rounded-lg border border-red-200 hover:bg-red-50 text-red-600">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 {% empty %}
