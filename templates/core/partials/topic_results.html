@@ -32,11 +32,21 @@
             <p class="text-sm text-gray-400 mt-0.5">{{ topics|length }} topics ranked by virality &amp; engagement
                 potential</p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
             <span
                 class="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-bold px-3 py-1.5 rounded-full">
                 <i class="fa-solid fa-robot text-[10px]"></i> Powered by Ollama
             </span>
+            {% if selected_platform %}
+            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold px-3 py-1.5 rounded-full">
+                <i class="fa-solid fa-globe text-[10px]"></i> {{ selected_platform }}
+            </span>
+            {% endif %}
+            {% if selected_post_type %}
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-bold px-3 py-1.5 rounded-full">
+                <i class="fa-solid fa-layer-group text-[10px]"></i> {{ selected_post_type }}
+            </span>
+            {% endif %}
         </div>
     </div>
 

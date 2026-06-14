@@ -89,7 +89,8 @@
                         <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
                             <circle cx="28" cy="28" r="22" stroke="#fed7aa" stroke-width="5" fill="none" />
                             <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
-                                style="stroke-dashoffset: calc(138.2 - (138.2 * {{ post.engagement_score }} / 100));"
+                                data-score="{{ post.engagement_score }}"
+                                data-ring="score"
                                 stroke="#f97316" stroke-width="5" stroke-linecap="round" fill="none" />
                         </svg>
                         <span
@@ -104,7 +105,8 @@
                         <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
                             <circle cx="28" cy="28" r="22" stroke="#bfdbfe" stroke-width="5" fill="none" />
                             <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
-                                style="stroke-dashoffset: calc(138.2 - (138.2 * {{ post.readability_score }} / 100));"
+                                data-score="{{ post.readability_score }}"
+                                data-ring="score"
                                 stroke="#3b82f6" stroke-width="5" stroke-linecap="round" fill="none" />
                         </svg>
                         <span
@@ -119,7 +121,8 @@
                         <svg class="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
                             <circle cx="28" cy="28" r="22" stroke="#e9d5ff" stroke-width="5" fill="none" />
                             <circle cx="28" cy="28" r="22" stroke-dasharray="138.2"
-                                style="stroke-dashoffset: calc(138.2 - (138.2 * {{ post.virality_score }} / 100));"
+                                data-score="{{ post.virality_score }}"
+                                data-ring="score"
                                 stroke="#a855f7" stroke-width="5" stroke-linecap="round" fill="none" />
                         </svg>
                         <span
@@ -343,6 +346,15 @@
 </div>
 
 <script>
+    (function () {
+        const circumference = 138.2;
+        document.querySelectorAll('[data-ring="score"]').forEach((circle) => {
+            const score = Math.max(0, Math.min(100, Number(circle.dataset.score || 0)));
+            circle.style.strokeDasharray = `${circumference}`;
+            circle.style.strokeDashoffset = `${circumference - (circumference * score / 100)}`;
+        });
+    })();
+
     async function runAi(tool) {
         const resultBox = document.getElementById('ai-result');
         const content = document.getElementById('ai-result-content');

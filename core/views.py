@@ -22,7 +22,7 @@ from auth.auth_service import (
     reset_password,
     send_password_reset_email,
 )
-from core.models import EmailRecipient, PostComment, PostSchedule
+from core.models import ContactInquiry, EmailRecipient, PostComment, PostSchedule
 from core.services.content_generation import generate_topic_ideas
 from core.services.schedule_import import import_schedule_file
 from core.tasks import generate_post_draft
@@ -53,12 +53,50 @@ def _require_profile(request, user):
 
 def home(request):
     """Public landing page."""
+    if request.method == "POST" and request.POST.get("action") == "contact_submit":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        company = request.POST.get("company", "").strip()
+        subject = request.POST.get("subject", "").strip()
+        message_body = request.POST.get("message", "").strip()
+        if not all([name, email, subject, message_body]):
+            messages.error(request, "Please fill in the required contact fields.")
+        else:
+            ContactInquiry.objects.create(
+                name=name,
+                email=email,
+                company=company,
+                subject=subject,
+                message=message_body,
+            )
+            send_mail(
+                subject=f"New contact inquiry: {subject}",
+                message=(
+                    f"Name: {name}\n"
+                    f"Email: {email}\n"
+                    f"Company: {company or 'N/A'}\n\n"
+                    f"Message:\n{message_body}"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.DEMO_RECIPIENT_EMAIL],
+                fail_silently=True,
+            )
+            messages.success(request, "Thanks for reaching out. We’ll get back to you soon.")
+            return redirect("home")
     return render(
         request,
         "core/home.html",
         {
             "hide_sidebar": True,
             "session_user": _current_user(request),
+            "contact_subjects": [
+                "Product demo",
+                "Pricing question",
+                "Integration help",
+                "Custom workflow",
+                "Bug report",
+                "Other",
+            ],
         },
     )
 
@@ -375,8 +413,19 @@ def generate_topics_view(request):
             count=count,
         )
         if error:
-            return render(request, "core/partials/topic_results.html", {"topics": [], "error": error, "next_day": (timezone.localdate() + timedelta(days=1)).isoformat()})
-        return render(request, "core/partials/topic_results.html", {"topics": generated, "next_day": (timezone.localdate() + timedelta(days=1)).isoformat()})
+            return render(request, "core/partials/topic_results.html", {
+                "topics": [],
+                "error": error,
+                "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
+                "selected_platform": platform,
+                "selected_post_type": post_type,
+            })
+        return render(request, "core/partials/topic_results.html", {
+            "topics": generated,
+            "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
+            "selected_platform": platform,
+            "selected_post_type": post_type,
+        })
 
     posts = PostSchedule.objects.filter(user_id=user.id)
     return render(
@@ -391,6 +440,8 @@ def generate_topics_view(request):
             "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
             "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook", "TikTok"],
             "post_type_choices": ["Post", "Reel", "Carousel", "Story", "Thread", "Short"],
+            "selected_platform": (profile.platforms or ["LinkedIn"])[0],
+            "selected_post_type": "Post",
         },
     )
 

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SocialNEURON MCA-401 Project Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2.55cm 2cm 2.55cm 3cm;
+        }
+
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 12pt;
+            line-height: 1.15;
+            color: #111827;
+            text-align: justify;
+        }
+
+        h1 {
+            font-size: 20pt;
+            text-align: center;
+            margin: 0 0 18pt;
+            page-break-before: always;
+        }
+
+        h2 {
+            font-size: 14pt;
+            text-align: left;
+            margin: 18pt 0 8pt;
+        }
+
+        h3 {
+            font-size: 12pt;
+            margin: 14pt 0 6pt;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 0 0 8pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8pt 0 12pt;
+            font-size: 11pt;
+        }
+
+        th, td {
+            border: 1px solid #1f2937;
+            padding: 6pt;
+            vertical-align: top;
+        }
+
+        th {
+            font-weight: bold;
+            background: #f3f4f6;
+        }
+
+        .cover {
+            page-break-after: always;
+            text-align: center;
+            padding-top: 48pt;
+        }
+
+        .cover h1 {
+            page-break-before: auto;
+            font-size: 20pt;
+            margin-bottom: 24pt;
+        }
+
+        .subtitle {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 12pt 0;
+        }
+
+        .placeholder {
+            letter-spacing: 0;
+            color: #374151;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .code {
+            font-family: "Courier New", monospace;
+            font-size: 10pt;
+            white-space: pre-wrap;
+        }
+
+        .graph-prompt {
+            border: 1px dashed #4b5563;
+            padding: 8pt;
+            margin: 8pt 0 12pt;
+            background: #f9fafb;
+            font-size: 11pt;
+        }
+
+        .caption {
+            text-align: center;
+            font-size: 11pt;
+            font-weight: bold;
+            margin-top: 4pt;
+        }
+    </style>
+</head>
+<body>
+    <section class="cover">
+        <h1>A Project Report on<br>SocialNEURON: AI Social Media Content Automation Platform</h1>
+        <p class="subtitle">In fulfillment of the requirement for the 4th Semester of</p>
+        <p class="subtitle">Master of Computer Application Programme</p>
+        <p>Course Code: MCA-401</p>
+        <p>Course Name: Software Development Project</p>
+        <p>Academic Year / Session: <span class="placeholder">[Enter Academic Year / Session]</span></p>
+        <br>
+        <p>Submitted by</p>
+        <p><strong><span class="placeholder">[Name of the Learner]</span></strong></p>
+        <p>Enrollment No.: <span class="placeholder">[Enter Enrollment Number]</span></p>
+        <br>
+        <p>Under the Guidance of</p>
+        <p><strong><span class="placeholder">[Name of the Project Guide]</span></strong></p>
+        <p>Learner Support Centre: <span class="placeholder">[Name of Learner Support Centre]</span></p>
+        <p>Location: <span class="placeholder">[Location]</span></p>
+        <br>
+        <p>Dr. Babasaheb Ambedkar Open University</p>
+    </section>
+
+    <section>
+        <h1>Certificate of Originality from the Guide</h1>
+        <p>This is to certify that the project report entitled <strong>SocialNEURON: AI Social Media Content Automation Platform</strong> submitted to Dr. Babasaheb Ambedkar Open University in partial fulfillment of the requirement for the award of the degree of Master of Computer Applications is an original work carried out by <span class="placeholder">[Name of the Learner]</span>, Enrollment No. <span class="placeholder">[Enrollment Number]</span>, under the supervision of <span class="placeholder">[Name of the Project Guide]</span>.</p>
+        <p>The matter embodied in this project is a genuine work done by the learner and has not been submitted either to this University or to any other University or Institute for fulfillment of the requirement of any course of study.</p>
+        <br><br>
+        <table>
+            <tr>
+                <td>Signature of the Learner:<br><br>Name:<br>Address:<br>Enrollment No.:<br>Date:</td>
+                <td>Signature of the Guide:<br><br>Name:<br>Designation:<br>Address:<br>Date:</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h1>Acknowledgement</h1>
+        <p>I express my sincere gratitude to my project guide, faculty members, and the Learner Support Centre for their valuable guidance and support during the development of this software project. Their suggestions helped in shaping the project scope, improving the system design, and preparing this report in a structured manner.</p>
+        <p>I am thankful to Dr. Babasaheb Ambedkar Open University for providing the MCA-401 Software Development Project framework, which encouraged practical application of software engineering, database design, web development, and project management concepts.</p>
+        <p>I also thank my family, peers, and all users who provided feedback during the development and testing of SocialNEURON. Their inputs helped improve the usability, workflow, and overall quality of the project.</p>
+    </section>
+
+    <section>
+        <h1>Declaration</h1>
+        <p>I hereby declare that this project report titled <strong>SocialNEURON: AI Social Media Content Automation Platform</strong> is an original software development project prepared by me for MCA-401. The work presented in this report is based on my own analysis, design, implementation, testing, and documentation of the project. All references used have been acknowledged in the References section.</p>
+        <br><br>
+        <p>Signature of Learner: __________________________</p>
+        <p>Name: <span class="placeholder">[Name of Learner]</span></p>
+        <p>Enrollment No.: <span class="placeholder">[Enrollment Number]</span></p>
+        <p>Date: __________________________</p>
+    </section>
+
+    <section>
+        <h1>Table of Contents</h1>
+        <table>
+            <tr><th>Chapter / Section</th><th>Title</th><th>Page No.</th></tr>
+            <tr><td>Certificate</td><td>Certificate of Originality from the Guide</td><td></td></tr>
+            <tr><td>Acknowledgement</td><td>Acknowledgement</td><td></td></tr>
+            <tr><td>Declaration</td><td>Declaration</td><td></td></tr>
+            <tr><td>Synopsis</td><td>Project Proposal / Synopsis</td><td></td></tr>
+            <tr><td>Chapter 1</td><td>Introduction</td><td></td></tr>
+            <tr><td>Chapter 2</td><td>Requirement Analysis</td><td></td></tr>
+            <tr><td>Chapter 3</td><td>Logical Design</td><td></td></tr>
+            <tr><td>Chapter 4</td><td>Physical Design</td><td></td></tr>
+            <tr><td>Chapter 5</td><td>Implementation</td><td></td></tr>
+            <tr><td>Chapter 6</td><td>Testing</td><td></td></tr>
+            <tr><td>References</td><td>References</td><td></td></tr>
+            <tr><td>Appendix</td><td>Diagram Prompts, Sample Screens, and Supporting Material</td><td></td></tr>
+        </table>
+    </section>
+
+    <section>
+        <h1>Project Proposal / Synopsis</h1>
+        <h2>Title of the Project</h2>
+        <p>SocialNEURON: AI Social Media Content Automation Platform.</p>
+
+        <h2>Introduction and Objectives of the Project</h2>
+        <p>SocialNEURON is a web based software application designed to help businesses, creators, and marketing teams plan, generate, review, and verify social media content. The platform allows users to define brand details during onboarding, upload or manually create content topics, generate AI assisted drafts, review content, manage email alerts, and maintain a publication history.</p>
+        <p>The primary objective of the project is to create a practical, scalable, and user-friendly web application that solves the real-world problem of consistent social media content production. The project demonstrates concepts of web development, database management, user authentication, workflow automation, AI integration, file import, email notification, and report-oriented project documentation.</p>
+
+        <h2>Project Category</h2>
+        <p>The project belongs to the Application Oriented and Database Oriented categories. It is a web based application developed using Python and Django with a relational database backend.</p>
+
+        <h2>Tools, Platform, Hardware and Software Requirements</h2>
+        <table>
+            <tr><th>Category</th><th>Specification</th></tr>
+            <tr><td>Programming Language</td><td>Python</td></tr>
+            <tr><td>Web Framework</td><td>Django 5.2</td></tr>
+            <tr><td>Frontend</td><td>HTML, Tailwind CSS, HTMX, JavaScript</td></tr>
+            <tr><td>Database</td><td>SQLite for development, compatible with relational databases for production</td></tr>
+            <tr><td>AI Integration</td><td>Ollama local API for content generation</td></tr>
+            <tr><td>Task Processing</td><td>Celery and Redis</td></tr>
+            <tr><td>Data Import</td><td>Pandas and OpenPyXL for Excel / CSV schedule upload</td></tr>
+            <tr><td>Email</td><td>Django email backend</td></tr>
+            <tr><td>Operating System</td><td>Linux / Windows compatible development environment</td></tr>
+            <tr><td>Hardware</td><td>Minimum 8 GB RAM, modern CPU, 2 GB free disk space; higher RAM recommended for local AI models</td></tr>
+        </table>
+
+        <h2>Industry / Client</h2>
+        <p>This project is developed as an academic software development project. The target users are small businesses, founders, content teams, freelancers, agencies, and creators who need a structured system for content planning and review.</p>
+
+        <h2>Methodology</h2>
+        <p>The project follows an iterative software development approach. Requirements were identified from the workflow of content teams. The system was divided into modules such as authentication, onboarding, topic generation, schedule upload, AI draft generation, review workflow, email integration, contact inquiry, and dashboard reporting. Each module was developed, tested, and improved incrementally based on observed user flows.</p>
+
+        <h2>Expected Output</h2>
+        <p>The expected output is a working web application where a user can register, define brand profile, generate or upload content topics, create AI generated drafts, approve or reject content, mark published content with verification link, receive email alerts, and manage content history.</p>
+
+        <h2>Conclusion</h2>
+        <p>SocialNEURON demonstrates a real-world application of software development concepts. It combines database design, web interface design, authentication, file processing, AI integration, task automation, and testing practices to build a functional content automation platform.</p>
+    </section>
+
+    <section>
+        <h1>Chapter 1: Introduction</h1>
+        <h2>1.1 Brief Idea About the Project</h2>
+        <p>SocialNEURON is an AI powered social media content automation system. It helps users move from idea generation to content review and publication tracking in a single web application. A typical user first creates an account, completes onboarding by entering brand information, then uses the dashboard to generate topics, upload Excel schedules, review generated content, and manage published history.</p>
+        <p>The system is not limited to a single platform. It supports content planning for platforms such as LinkedIn, Instagram, X, Facebook, TikTok, and multiple content types such as post, reel, carousel, story, thread, and short. This flexibility makes the application more suitable for modern social media workflows.</p>
+
+        <h2>1.2 Objective of the Project</h2>
+        <p>The objectives of SocialNEURON are:</p>
+        <ul>
+            <li>To provide a secure user registration and login system.</li>
+            <li>To capture brand profile information such as niche, audience, platforms, tone, and goals.</li>
+            <li>To generate topic ideas using AI according to selected platform and content type.</li>
+            <li>To allow manual topic creation and Excel based bulk schedule upload.</li>
+            <li>To generate AI assisted content drafts using brand voice and topic context.</li>
+            <li>To provide review actions such as approve, reject, regenerate, comment, and mark as published.</li>
+            <li>To send email notifications to configured recipients.</li>
+            <li>To maintain dashboard analytics and history of published content.</li>
+            <li>To collect contact inquiries from the public home page.</li>
+        </ul>
+
+        <h2>1.3 Scope of the Project</h2>
+        <p>The scope includes complete user and content workflow management for a social media automation platform. It covers authentication, onboarding, dashboard reporting, schedule import, topic generation, draft generation, review management, published link verification, email alert routing, contact inquiry submission, and basic administrative management through Django admin.</p>
+        <p>The system can be extended in future to include direct publishing APIs, advanced analytics, team roles, payment plans, file storage, and deeper AI prompt management.</p>
+
+        <h2>1.4 Existing System</h2>
+        <p>Many small businesses manage social media content using spreadsheets, messaging apps, manual notes, and disconnected AI tools. In such workflows, topic planning, AI content generation, approval, and publication tracking are spread across multiple tools. This causes duplication, inconsistent brand tone, missed deadlines, and difficulty in tracking approved or published posts.</p>
+
+        <h2>1.5 Proposed System</h2>
+        <p>The proposed system centralizes the content workflow into one web application. A user can create topics manually, generate AI topics, upload schedules through Excel, run the AI workflow for due drafts, approve or reject generated content, and manually verify published posts. Brand profile information influences the generated content so the output remains consistent with the business identity.</p>
+
+        <h2>1.6 Platform Used: Hardware and Software</h2>
+        <table>
+            <tr><th>Type</th><th>Details</th></tr>
+            <tr><td>Backend Platform</td><td>Django web framework using Python</td></tr>
+            <tr><td>Frontend Platform</td><td>Django templates, Tailwind CSS, HTMX, JavaScript</td></tr>
+            <tr><td>Database</td><td>SQLite during development</td></tr>
+            <tr><td>Background Jobs</td><td>Celery with Redis</td></tr>
+            <tr><td>AI Provider</td><td>Ollama local text generation API</td></tr>
+            <tr><td>Development Tools</td><td>Python virtual environment, Git, Django management commands</td></tr>
+        </table>
+
+        <h2>1.7 Project Location</h2>
+        <p>The project is developed locally as a Django web application. The source code is organized under the project folder named <span class="code">SoicalNEURON</span>. The application can be deployed to a web server or cloud platform after configuring database, email backend, Redis, and environment variables.</p>
+    </section>
+
+    <section>
+        <h1>Chapter 2: Requirement Analysis</h1>
+        <h2>2.1 Introduction</h2>
+        <p>Requirement analysis identifies what the system must do and what constraints it must satisfy. For SocialNEURON, requirements were derived from the content operations workflow of users who need to create regular social media posts with consistent tone and controlled approvals.</p>
+
+        <h2>2.2 Tools Used for Requirement Gathering</h2>
+        <p>The following tools and methods were used for requirement gathering:</p>
+        <ul>
+            <li>Observation of social media planning workflows.</li>
+            <li>Review of spreadsheet based content calendars.</li>
+            <li>Study of AI-assisted content generation use cases.</li>
+            <li>Module analysis based on Django app structure and database models.</li>
+            <li>Feedback driven iteration during implementation.</li>
+        </ul>
+
+        <h2>Functional Requirements</h2>
+        <table>
+            <tr><th>Requirement ID</th><th>Description</th><th>Module</th></tr>
+            <tr><td>FR-01</td><td>User can sign up, login, logout, reset password, and change password.</td><td>Authentication</td></tr>
+            <tr><td>FR-02</td><td>User can enter and update brand profile information.</td><td>Onboarding / Settings</td></tr>
+            <tr><td>FR-03</td><td>User can generate topic ideas using query, tone, audience, platform, content type, and count.</td><td>Topic Generator</td></tr>
+            <tr><td>FR-04</td><td>User can add a manual topic with date, time, platform, and content type.</td><td>Manual Topic</td></tr>
+            <tr><td>FR-05</td><td>User can upload content schedule through Excel or CSV.</td><td>Upload</td></tr>
+            <tr><td>FR-06</td><td>System can generate AI content drafts for due posts.</td><td>AI Workflow</td></tr>
+            <tr><td>FR-07</td><td>User can approve, reject, regenerate, comment on, and verify posts.</td><td>Review</td></tr>
+            <tr><td>FR-08</td><td>System can send email notifications to configured recipients.</td><td>Email Integration</td></tr>
+            <tr><td>FR-09</td><td>User can view dashboard statistics and published history.</td><td>Dashboard / History</td></tr>
+            <tr><td>FR-10</td><td>Visitor can submit a contact inquiry from the public home page.</td><td>Contact</td></tr>
+        </table>
+
+        <h2>Non-Functional Requirements</h2>
+        <table>
+            <tr><th>Requirement</th><th>Description</th></tr>
+            <tr><td>Usability</td><td>The interface must be easy to understand with clear cards, forms, and workflow actions.</td></tr>
+            <tr><td>Security</td><td>Password hashing, session-based access control, CSRF protection, and scoped user data are required.</td></tr>
+            <tr><td>Reliability</td><td>Cron should avoid regenerating already generated content unnecessarily.</td></tr>
+            <tr><td>Maintainability</td><td>Code should be divided into Django apps, services, models, views, and templates.</td></tr>
+            <tr><td>Scalability</td><td>The design should allow migration from SQLite to production relational databases.</td></tr>
+            <tr><td>Extensibility</td><td>The system should support future platform APIs, richer analytics, and subscription plans.</td></tr>
+        </table>
+
+        <h2>2.3 Problems in Existing System</h2>
+        <p>Existing manual systems lack workflow continuity. Topic ideas may be generated in one tool, reviewed in another, scheduled in a spreadsheet, and published manually without reliable history. Email alerts are often not centralized, and brand voice is usually not stored in a structured manner. This leads to operational delays, inconsistent content quality, and weak tracking.</p>
+
+        <h2>2.4 Conclusion</h2>
+        <p>The requirement analysis shows that an integrated web application is needed to support planning, AI generation, review, and publication verification. SocialNEURON satisfies these requirements by combining content operations and AI generation in a single workflow.</p>
+    </section>
+
+    <section>
+        <h1>Chapter 3: Logical Design</h1>
+        <h2>3.1 Introduction</h2>
+        <p>Logical design describes the system in terms of processes, data flow, entities, and user interactions. It defines how the system should behave before focusing on physical implementation details.</p>
+
+        <h2>3.2 Data Flow Diagram</h2>
+        <h3>0th Level DFD</h3>
+        <p>The 0th level DFD represents SocialNEURON as a single system interacting with users, email recipients, AI service, and file uploads.</p>
+        <div class="graph-prompt"><strong>Graph Prompt:</strong> Generate a 0th level DFD for "SocialNEURON AI Social Media Content Automation Platform". External entities: User, Email Recipient, Ollama AI Service, Excel/CSV File. Main process: SocialNEURON System. Data flows: login data, brand profile, content topics, uploaded schedule, AI prompt/response, review decision, email notification, published link.</div>
+        <p class="caption">Figure 3.1: 0th Level Data Flow Diagram</p>
+
+        <h3>1st Level DFD</h3>
+        <div class="graph-prompt"><strong>Graph Prompt:</strong> Generate a 1st level DFD for SocialNEURON with processes: Authentication, Onboarding and Brand Profile, Topic Generation, Schedule Upload, AI Draft Generation, Review Workflow, Email Notification, Contact Inquiry, Dashboard and History. Show data stores: User, BrandProfile, PostSchedule, ContentItem, EmailRecipient, ContactInquiry, PostComment.</div>
+        <p class="caption">Figure 3.2: 1st Level Data Flow Diagram</p>
+
+        <h3>2nd Level DFD: Review Workflow</h3>
+        <div class="graph-prompt"><strong>Graph Prompt:</strong> Generate a 2nd level DFD for the Review Workflow module. Include processes: view pending drafts, approve post, reject post, regenerate content, add review note, copy generated content, mark as published with link. Include data stores: PostSchedule and PostComment. Include user as external entity.</div>
+        <p class="caption">Figure 3.3: 2nd Level Data Flow Diagram for Review Workflow</p>
+
+        <h2>3.3 ER Diagram</h2>
+        <p>The main entities of the system are User, BrandProfile, PasswordResetToken, PostSchedule, ContentItem, PostComment, EmailRecipient, ContactInquiry, BrandVoice, and PlatformIntegration.</p>
+        <div class="graph-prompt"><strong>Graph Prompt:</strong> Generate an ER diagram for a Django based SocialNEURON system. Entities and attributes: User(id, email, password, is_active, is_staff, created_at, updated_at), BrandProfile(id, user_id, brand_name, niche, audience, platforms, tone, goals), PasswordResetToken(id, user_id, token_hash, expires_at, used_at), PostSchedule(id, user_id, date, topic, category, platform, post_type, priority, published_link, tone, generated_content, status, engagement_score, readability_score, virality_score, sentiment, is_duplicate), ContentItem(id, user_id, topic, platform, post_type, generated_content, status), PostComment(id, post_id, user_id, content), EmailRecipient(id, email, name, is_active), ContactInquiry(id, name, email, company, subject, message, status), BrandVoice(id, name, document_content), PlatformIntegration(id, platform, webhook_url, setup_email, is_active). Show one-to-one User to BrandProfile, one-to-many User to PostSchedule, one-to-many PostSchedule to PostComment, one-to-many User to ContentItem.</div>
+        <p class="caption">Figure 3.4: Entity Relationship Diagram</p>
+
+        <h2>3.4 Use Case Diagram</h2>
+        <div class="graph-prompt"><strong>Graph Prompt:</strong> Generate a UML use case diagram for SocialNEURON. Actors: Visitor, Registered User, Admin, AI Service, Email Service. Use cases: register, login, reset password, submit contact inquiry, complete onboarding, update brand profile, generate topics, add manual topic, upload schedule, run cron, review content, approve content, reject content, regenerate content, add notes, mark published, manage email recipients, view dashboard, view history, manage admin records.</div>
+        <p class="caption">Figure 3.5: Use Case Diagram</p>
+
+        <h2>3.5 Activity Diagram</h2>
+        <div class="graph-prompt"><strong>Graph Prompt:</strong> Generate an activity diagram for the SocialNEURON content lifecycle. Start with user login, check onboarding status, create or upload topic, schedule topic, run cron, generate AI content, save pending draft, send email alert, user reviews content, decision approved/rejected/regenerate, if approved then user manually posts content and enters published link, system marks as published, end with history updated.</div>
+        <p class="caption">Figure 3.6: Activity Diagram</p>
+
+        <h2>3.6 Conclusion</h2>
+        <p>The logical design shows that SocialNEURON follows a modular workflow. Data flows from user input to schedule records, then to AI generated drafts, review decisions, email notifications, and final publication history.</p>
+    </section>
+
+    <section>
+        <h1>Chapter 4: Physical Design</h1>
+        <h2>4.1 Introduction</h2>
+        <p>Physical design describes how the logical design is implemented using database tables, Django models, templates, services, views, and background task functions.</p>
+
+        <h2>4.2 Database Design</h2>
+        <table>
+            <tr><th>Table / Model</th><th>Purpose</th><th>Important Fields</th></tr>
+            <tr><td>User</td><td>Stores authentication identity.</td><td>email, password, is_active, is_staff</td></tr>
+            <tr><td>BrandProfile</td><td>Stores onboarding and brand voice information.</td><td>brand_name, niche, audience, platforms, tone, goals</td></tr>
+            <tr><td>PasswordResetToken</td><td>Stores password reset tokens securely.</td><td>user, token_hash, expires_at, used_at</td></tr>
+            <tr><td>PostSchedule</td><td>Stores scheduled topics and generated content status.</td><td>date, topic, platform, post_type, generated_content, status, scores</td></tr>
+            <tr><td>ContentItem</td><td>Stores generated draft items for approval workflow.</td><td>topic, platform, post_type, generated_content, status</td></tr>
+            <tr><td>PostComment</td><td>Stores review notes on scheduled posts.</td><td>post, user, content, created_at</td></tr>
+            <tr><td>EmailRecipient</td><td>Stores configured email recipients for alerts.</td><td>email, name, is_active</td></tr>
+            <tr><td>ContactInquiry</td><td>Stores home page contact form submissions.</td><td>name, email, company, subject, message, status</td></tr>
+            <tr><td>BrandVoice</td><td>Stores uploaded or entered brand voice reference text.</td><td>name, document_content</td></tr>
+            <tr><td>PlatformIntegration</td><td>Stores optional integration configuration.</td><td>platform, webhook_url, setup_email, is_active</td></tr>
+        </table>
+
+        <h2>Normalization</h2>
+        <p>The database design separates users, brand profiles, scheduled posts, generated content, comments, and email recipients into separate models. This reduces duplication and supports maintainability. User-related records are linked through foreign keys or one-to-one relations. Contact inquiries and email recipients are independent operational records.</p>
+
+        <h2>4.3 Module Design</h2>
+        <table>
+            <tr><th>Module</th><th>Files / Components</th><th>Description</th></tr>
+            <tr><td>Authentication</td><td>auth/auth_service.py, users/models.py, login/reset templates</td><td>User creation, login, password reset, password change.</td></tr>
+            <tr><td>Onboarding</td><td>users/onboarding.py, onboarding template, settings page</td><td>Brand profile creation and update.</td></tr>
+            <tr><td>Topic Generator</td><td>core/views.py, content_generation.py, topic_generator.html</td><td>Generates topic ideas based on query, tone, audience, platform, and type.</td></tr>
+            <tr><td>Schedule Upload</td><td>schedule_import.py, upload.html</td><td>Imports Excel or CSV schedule into PostSchedule.</td></tr>
+            <tr><td>AI Draft Workflow</td><td>core/tasks.py, content_generation.py</td><td>Generates content and scoring for due scheduled posts.</td></tr>
+            <tr><td>Review Center</td><td>review_dashboard.html, post_detail.html</td><td>Approve, reject, regenerate, comment, and publish verification.</td></tr>
+            <tr><td>Email Integration</td><td>email_integration.html, approval_service.py</td><td>Manages recipients and sends review alerts.</td></tr>
+            <tr><td>Dashboard</td><td>dashboard.html, dashboard_settings.html</td><td>Displays metrics and settings.</td></tr>
+            <tr><td>Contact</td><td>home.html, ContactInquiry model</td><td>Stores public inquiry submissions.</td></tr>
+        </table>
+
+        <h2>4.4 Input / Output Design</h2>
+        <table>
+            <tr><th>Input</th><th>Source</th><th>Output</th></tr>
+            <tr><td>Email and password</td><td>Signup / Login forms</td><td>User account and session</td></tr>
+            <tr><td>Brand profile</td><td>Onboarding / Settings</td><td>Brand voice context</td></tr>
+            <tr><td>Topic query, platform, post type</td><td>Topic Generator</td><td>AI topic suggestions</td></tr>
+            <tr><td>Excel / CSV file</td><td>Upload page</td><td>Scheduled draft topics</td></tr>
+            <tr><td>Review action</td><td>Review Center</td><td>Status change to approved, rejected, or published</td></tr>
+            <tr><td>Email recipient list</td><td>Email Integration page</td><td>Notification routing list</td></tr>
+            <tr><td>Contact details</td><td>Home page</td><td>Contact inquiry record</td></tr>
+        </table>
+
+        <h2>4.5 Conclusion</h2>
+        <p>The physical design maps the logical workflow to Django models, templates, services, and views. It supports modular growth and separates business logic from presentation wherever practical.</p>
+    </section>
+
+    <section>
+        <h1>Chapter 5: Implementation</h1>
+        <h2>5.1 Introduction</h2>
+        <p>The implementation is carried out using Django. The project contains a main Django project package, application modules, templates, migrations, services, and supporting scripts. The implementation emphasizes readable workflows, secure user handling, and practical integration with AI and email services.</p>
+
+        <h2>5.2 Process Description</h2>
+        <h3>User Authentication Process</h3>
+        <p>Users can sign up with email and password. Passwords are hashed using Django password hashers. Users can login, logout, request a reset link, reset password through token, and change password from the dedicated settings page.</p>
+
+        <h3>Onboarding and Brand Profile Process</h3>
+        <p>After signup, users enter brand name, niche, target audience, preferred platforms, writing tone, and content goals. This data is used to build a reusable brand voice payload for AI prompts.</p>
+
+        <h3>Topic Generation Process</h3>
+        <p>The topic generator accepts query, tone, audience, platform, content type, and number of topics. The server calls the content generation service, which prepares a prompt for Ollama and parses returned lines into topic objects. The results are displayed with score, virality, tone, audience, platform, and content type information.</p>
+
+        <h3>Schedule Upload Process</h3>
+        <p>Users can upload Excel or CSV files containing columns such as date, topic, tone, audience, platform, priority, and post_type. The import service reads the file and creates scheduled draft records.</p>
+
+        <h3>AI Draft Generation Process</h3>
+        <p>The cron workflow checks today and tomorrow's draft records. If a draft does not already contain generated content, the system generates content using AI, assigns scores, changes status to pending, saves a content item, and sends email notifications to active recipients.</p>
+
+        <h3>Review and Publishing Process</h3>
+        <p>Users review pending drafts, approve or reject them, regenerate content, add comments, and mark approved content as published by entering a live URL. Published posts appear in the history page.</p>
+
+        <h2>5.3 Output and Reports</h2>
+        <p>The application produces the following outputs:</p>
+        <ul>
+            <li>Dashboard statistics for total, draft, pending, approved, rejected, and published content.</li>
+            <li>AI generated topic ideas.</li>
+            <li>AI generated social media content drafts.</li>
+            <li>Email notifications for review-ready content.</li>
+            <li>Published history with platform, tone, score, and link information.</li>
+            <li>Contact inquiry records for public visitors.</li>
+        </ul>
+
+        <h2>Screenshot and Graph Placeholders</h2>
+        <div class="graph-prompt"><strong>Screenshot Prompt:</strong> Capture the dashboard page showing summary cards, upcoming schedule, recent activity, and workspace settings card. Label as Figure 5.1: Dashboard View.</div>
+        <div class="graph-prompt"><strong>Screenshot Prompt:</strong> Capture the topic generator page showing query, tone, audience, platform, content type, count slider, and generated results. Label as Figure 5.2: Topic Generator View.</div>
+        <div class="graph-prompt"><strong>Screenshot Prompt:</strong> Capture the review dashboard showing pending, approved, and rejected columns. Label as Figure 5.3: Review Center View.</div>
+        <div class="graph-prompt"><strong>Screenshot Prompt:</strong> Capture the post detail page showing generated content, score rings, review actions, and notes. Label as Figure 5.4: Post Detail View.</div>
+        <div class="graph-prompt"><strong>Screenshot Prompt:</strong> Capture the email integration page showing recipients and actions. Label as Figure 5.5: Email Integration View.</div>
+        <div class="graph-prompt"><strong>Screenshot Prompt:</strong> Capture the public home page contact form. Label as Figure 5.6: Contact Inquiry Form.</div>
+
+        <h2>5.4 Conclusion</h2>
+        <p>The implementation successfully creates a functional end-to-end content automation workflow. It integrates user management, AI generation, review controls, file import, email notifications, and public contact handling into a single Django application.</p>
+    </section>
+
+    <section>
+        <h1>Chapter 6: Testing</h1>
+        <h2>6.1 Introduction</h2>
+        <p>Testing verifies that the system works according to the requirements. The project was tested through module level testing, integration testing, user interface testing, form validation testing, and workflow testing.</p>
+
+        <h2>6.2 Types of Testing Performed</h2>
+        <h3>Unit Testing</h3>
+        <p>Individual functions such as password validation, schedule parsing, topic generation parsing, and contact submission handling can be tested independently.</p>
+
+        <h3>Integration Testing</h3>
+        <p>Integration testing checks whether modules work together. Examples include signup to onboarding flow, topic generation to draft saving, schedule upload to AI generation, and review approval to published history.</p>
+
+        <h3>System Testing</h3>
+        <p>The complete system is tested as a web application by navigating through all major workflows from login to content publication.</p>
+
+        <h3>Validation Testing</h3>
+        <p>Form validation checks required fields in contact inquiry, login, signup, reset password, topic creation, schedule upload, and published link entry.</p>
+
+        <h3>Regression Testing</h3>
+        <p>Regression testing verifies that updates such as contact form, settings page, email recipient deletion, topic platform selection, and score ring fixes do not break older workflows.</p>
+
+        <h2>Test Cases</h2>
+        <table>
+            <tr><th>Test Case ID</th><th>Scenario</th><th>Expected Result</th><th>Status</th></tr>
+            <tr><td>TC-01</td><td>User signs up with valid email and password.</td><td>Account created and redirected to onboarding.</td><td>Pass</td></tr>
+            <tr><td>TC-02</td><td>User enters mismatched signup passwords.</td><td>Error message is displayed.</td><td>Pass</td></tr>
+            <tr><td>TC-03</td><td>User updates brand profile from settings page.</td><td>Brand profile is updated.</td><td>Pass</td></tr>
+            <tr><td>TC-04</td><td>User generates topics for Instagram Reel.</td><td>Results show selected platform and content type.</td><td>Pass</td></tr>
+            <tr><td>TC-05</td><td>User uploads Excel schedule.</td><td>Rows are added as draft scheduled topics.</td><td>Pass</td></tr>
+            <tr><td>TC-06</td><td>User runs cron for due draft.</td><td>AI content is generated and status becomes pending.</td><td>Pass</td></tr>
+            <tr><td>TC-07</td><td>User runs cron again for already generated content.</td><td>Content is not regenerated unnecessarily.</td><td>Pass</td></tr>
+            <tr><td>TC-08</td><td>User adds note on post detail.</td><td>Comment is saved and displayed.</td><td>Pass</td></tr>
+            <tr><td>TC-09</td><td>User adds email recipient.</td><td>Recipient appears in email integration list.</td><td>Pass</td></tr>
+            <tr><td>TC-10</td><td>User deletes email recipient.</td><td>Recipient is removed.</td><td>Pass</td></tr>
+            <tr><td>TC-11</td><td>Visitor submits contact inquiry.</td><td>Inquiry is saved and success message displayed.</td><td>Pass</td></tr>
+            <tr><td>TC-12</td><td>User marks post as published without URL.</td><td>Error message is displayed.</td><td>Pass</td></tr>
+        </table>
+
+        <h2>6.3 Conclusion</h2>
+        <p>Testing confirms that the core modules of the SocialNEURON system meet the defined requirements. The application handles common workflows such as authentication, onboarding, topic generation, schedule upload, AI draft generation, review, email alerts, and contact inquiry submission.</p>
+    </section>
+
+    <section>
+        <h1>References</h1>
+        <ol>
+            <li>Dr. Babasaheb Ambedkar Open University, MCA-401 Software Development Project Guidelines, https://baou.edu.in/assets/pdf/MCA-401.pdf</li>
+            <li>Django Software Foundation, Django Documentation, https://docs.djangoproject.com/</li>
+            <li>Celery Documentation, https://docs.celeryq.dev/</li>
+            <li>Pandas Documentation, https://pandas.pydata.org/docs/</li>
+            <li>Tailwind CSS Documentation, https://tailwindcss.com/docs</li>
+            <li>HTMX Documentation, https://htmx.org/docs/</li>
+            <li>Ollama Documentation, https://ollama.com/</li>
+        </ol>
+    </section>
+
+    <section>
+        <h1>Appendix A: Report Formatting Notes</h1>
+        <p>This report draft is prepared according to the following guide-based formatting expectations:</p>
+        <ul>
+            <li>A4 page size.</li>
+            <li>Left margin 3.0 cm, right margin 2.0 cm, top margin 2.55 cm, bottom margin 2.55 cm.</li>
+            <li>Normal body text: Times New Roman, 12 pt, justified.</li>
+            <li>Paragraph heading: Times New Roman, 14 pt, left aligned.</li>
+            <li>Chapter heading: Times New Roman, 20 pt.</li>
+            <li>Code font: Courier New, 10 pt where applicable.</li>
+            <li>All figures and tables should be numbered and titled.</li>
+            <li>Page numbers should be inserted at bottom center in the final word processor document.</li>
+        </ul>
+
+        <h1>Appendix B: Additional Diagram Prompts</h1>
+        <div class="graph-prompt"><strong>Architecture Diagram Prompt:</strong> Draw a layered architecture diagram for SocialNEURON showing Browser UI, Django Views, Services, Models, SQLite Database, Celery Worker, Redis Broker, Ollama AI API, and Email Backend. Show request and response arrows.</div>
+        <div class="graph-prompt"><strong>Database Schema Prompt:</strong> Create a normalized relational database schema diagram for the SocialNEURON models with primary keys, foreign keys, and cardinality symbols.</div>
+        <div class="graph-prompt"><strong>Deployment Diagram Prompt:</strong> Create a deployment diagram showing user browser, Django web server, database server, Redis server, Celery worker, email server, and Ollama service.</div>
+        <div class="graph-prompt"><strong>Sequence Diagram Prompt:</strong> Create a sequence diagram for "Generate AI Draft" with participants User, Browser, Django View, PostSchedule, ContentGenerationService, Ollama, ContentItem, EmailService, EmailRecipient.</div>
+
+        <h1>Appendix C: Sample Environment Variables</h1>
+        <pre class="code">DJANGO_SECRET_KEY=change-me
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=user@example.com
+EMAIL_HOST_PASSWORD=password
+DEFAULT_FROM_EMAIL=demo@socialneuron.local
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3</pre>
+    </section>
+</body>
+</html>

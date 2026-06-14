@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BrandVoice, ContentItem, EmailRecipient, PlatformIntegration, PostSchedule
+from .models import BrandVoice, ContentItem, ContactInquiry, EmailRecipient, PlatformIntegration, PostSchedule
 
 @admin.register(PostSchedule)
 class PostScheduleAdmin(admin.ModelAdmin):
@@ -33,3 +33,10 @@ class EmailRecipientAdmin(admin.ModelAdmin):
     list_display = ('email', 'name', 'is_active', 'created_at')
     list_filter = ('is_active',)
     search_fields = ('email', 'name')
+
+
+@admin.register(ContactInquiry)
+class ContactInquiryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'company', 'subject', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('name', 'email', 'company', 'subject', 'message')

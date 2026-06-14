@@ -1,90 +1,175 @@
 {% extends 'public_base.html' %}
 {% block title %}SocialNEURON · SaaS MVP{% endblock %}
 {% block content %}
-<div class="grid lg:grid-cols-2 gap-10 items-center">
-    <section class="space-y-6">
-        <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-indigo-200 bg-white/5 border border-white/10 px-3 py-2 rounded-full">
-            SaaS-ready MVP
-        </span>
-        <h2 class="text-5xl md:text-6xl font-black leading-tight">Turn one brand into a repeatable content engine.</h2>
-        <p class="text-slate-300 text-lg max-w-xl">
-            Sign up, complete onboarding, generate platform-specific content, review drafts, and keep every post isolated by user.
-        </p>
-        <div class="flex flex-wrap gap-3">
-            <a href="{% url 'signup' %}" class="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold px-5 py-3 rounded-xl">Create account</a>
-            <a href="{% url 'login' %}" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white font-semibold px-5 py-3 rounded-xl">Login</a>
+<div class="flex flex-col gap-16">
+    <section class="grid lg:grid-cols-2 gap-10 items-center">
+        <div class="space-y-6">
+            <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-indigo-200 bg-white/5 border border-white/10 px-3 py-2 rounded-full">
+                SaaS-ready MVP
+            </span>
+            <h2 class="text-5xl md:text-6xl font-black leading-tight">Turn one brand into a repeatable content engine.</h2>
+            <p class="text-slate-300 text-lg max-w-xl">
+                Sign up, complete onboarding, generate platform-specific content, review drafts, and keep every post isolated by user.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'signup' %}" class="bg-indigo-500 hover:bg-indigo-400 text-white font-semibold px-5 py-3 rounded-xl">Create account</a>
+                <a href="{% url 'login' %}" class="bg-white/10 hover:bg-white/15 border border-white/10 text-white font-semibold px-5 py-3 rounded-xl">Login</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6">
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">01</p><p class="text-xs text-slate-300">Signup</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">02</p><p class="text-xs text-slate-300">Onboard</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">03</p><p class="text-xs text-slate-300">Generate</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">04</p><p class="text-xs text-slate-300">Approve</p></div>
+            </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">01</p><p class="text-xs text-slate-300">Signup</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">02</p><p class="text-xs text-slate-300">Onboard</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">03</p><p class="text-xs text-slate-300">Generate</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl font-black">04</p><p class="text-xs text-slate-300">Approve</p></div>
+
+        <aside class="lg:justify-self-end w-full max-w-xl bg-white text-slate-900 rounded-3xl shadow-2xl shadow-indigo-950/30 p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">What you get</p>
+            <h3 class="text-2xl font-black mt-2">A clean workflow for multi-user content ops</h3>
+            <div class="mt-6 space-y-4">
+                <div class="border border-slate-200 rounded-2xl p-4">
+                    <p class="font-bold">Brand-aware content</p>
+                    <p class="text-sm text-slate-600">Onboarding answers feed brand voice automatically.</p>
+                </div>
+                <div class="border border-slate-200 rounded-2xl p-4">
+                    <p class="font-bold">Draft approval workflow</p>
+                    <p class="text-sm text-slate-600">Generated content stays in review until approved or rejected.</p>
+                </div>
+                <div class="border border-slate-200 rounded-2xl p-4">
+                    <p class="font-bold">User isolation</p>
+                    <p class="text-sm text-slate-600">Every query is scoped by user_id, so data stays private.</p>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">Performance</p>
+            <h3 class="text-2xl font-black mt-2">Built for fast-moving teams</h3>
+            <p class="text-sm text-slate-300 mt-3">Create ideas, send to drafts, review outputs, and keep the pipeline moving without tab switching.</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">Control</p>
+            <h3 class="text-2xl font-black mt-2">One user, one workspace</h3>
+            <p class="text-sm text-slate-300 mt-3">All content flows are scoped by user session, so teams can safely collaborate without cross-talk.</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">Flexibility</p>
+            <h3 class="text-2xl font-black mt-2">Platform and format aware</h3>
+            <p class="text-sm text-slate-300 mt-3">Generate content for LinkedIn, Instagram, X, reels, posts, and more with tuned prompts.</p>
         </div>
     </section>
 
-    <aside class="lg:justify-self-end w-full max-w-xl bg-white text-slate-900 rounded-3xl shadow-2xl shadow-indigo-950/30 p-6">
-        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">What you get</p>
-        <h3 class="text-2xl font-black mt-2">A clean workflow for multi-user content ops</h3>
-        <div class="mt-6 space-y-4">
-            <div class="border border-slate-200 rounded-2xl p-4">
-                <p class="font-bold">Brand-aware content</p>
-                <p class="text-sm text-slate-600">Onboarding answers feed brand voice automatically.</p>
-            </div>
-            <div class="border border-slate-200 rounded-2xl p-4">
-                <p class="font-bold">Draft approval workflow</p>
-                <p class="text-sm text-slate-600">Generated content stays in review until approved or rejected.</p>
-            </div>
-            <div class="border border-slate-200 rounded-2xl p-4">
-                <p class="font-bold">User isolation</p>
-                <p class="text-sm text-slate-600">Every query is scoped by user_id, so data stays private.</p>
+    <section class="grid lg:grid-cols-2 gap-6 items-start">
+        <div class="bg-white text-slate-900 rounded-3xl p-6 shadow-2xl shadow-indigo-950/20">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">Services</p>
+            <h3 class="text-2xl font-black mt-2">Built for content teams that need speed and control</h3>
+            <div class="mt-5 space-y-4">
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-indigo-300"></i></div>
+                    <div>
+                        <p class="font-semibold">AI topic generation</p>
+                        <p class="text-sm text-slate-600">Create platform-aware ideas with tone and audience context.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-clipboard-check text-emerald-300"></i></div>
+                    <div>
+                        <p class="font-semibold">Review workflow</p>
+                        <p class="text-sm text-slate-600">Keep drafts, approvals, and publishing verification in one place.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-cloud-arrow-up text-purple-300"></i></div>
+                    <div>
+                        <p class="font-semibold">Bulk scheduling</p>
+                        <p class="text-sm text-slate-600">Import content plans from Excel or create them manually.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900/10 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-slate-700"></i></div>
+                    <div>
+                        <p class="font-semibold">Workspace settings</p>
+                        <p class="text-sm text-slate-600">Update password, brand profile, and recipient workflows in dedicated pages.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </aside>
-</div>
 
-<section class="mt-20 grid md:grid-cols-2 gap-6">
-    <div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-sm">
-        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">Services</p>
-        <h3 class="text-2xl font-black mt-2">Built for content teams that need speed and control</h3>
-        <div class="mt-5 space-y-4 text-slate-200">
-            <div class="flex gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-indigo-300"></i></div>
-                <div>
-                    <p class="font-semibold">AI topic generation</p>
-                    <p class="text-sm text-slate-300">Create platform-aware ideas with tone and audience context.</p>
+        <div class="bg-white text-slate-900 rounded-3xl p-6 shadow-2xl shadow-indigo-950/20">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">Contact Us</p>
+            <h3 class="text-2xl font-black mt-2">Tell us what you need</h3>
+            <p class="text-sm text-slate-600 mt-2">Send a message and we’ll follow up with the right setup, pricing, or workflow advice.</p>
+            <form method="post" class="mt-6 space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="contact_submit">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Name</label>
+                        <input type="text" name="name" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your name">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Email</label>
+                        <input type="email" name="email" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="you@example.com">
+                    </div>
                 </div>
-            </div>
-            <div class="flex gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-clipboard-check text-emerald-300"></i></div>
                 <div>
-                    <p class="font-semibold">Review workflow</p>
-                    <p class="text-sm text-slate-300">Keep drafts, approvals, and publishing verification in one place.</p>
+                    <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Company</label>
+                    <input type="text" name="company" class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Optional company name">
                 </div>
-            </div>
-            <div class="flex gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-cloud-arrow-up text-purple-300"></i></div>
                 <div>
-                    <p class="font-semibold">Bulk scheduling</p>
-                    <p class="text-sm text-slate-300">Import content plans from Excel or create them manually.</p>
+                    <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Subject</label>
+                    <select name="subject" class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        {% for subject in contact_subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-            </div>
+                <div>
+                    <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Message</label>
+                    <textarea name="message" rows="5" required class="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="Tell us about your team, use case, or question."></textarea>
+                </div>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-3 rounded-xl">Send Inquiry</button>
+            </form>
         </div>
-    </div>
-    <div class="bg-white text-slate-900 rounded-3xl p-6 shadow-2xl shadow-indigo-950/20">
-        <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">Contact</p>
-        <h3 class="text-2xl font-black mt-2">Talk to us about your workflow</h3>
-        <p class="text-sm text-slate-600 mt-2">If you want onboarding, integrations, or a custom publishing flow, this is the right place to start.</p>
-        <div class="mt-6 grid gap-3">
-            <div class="rounded-2xl border border-slate-200 p-4">
-                <p class="text-xs font-bold uppercase text-slate-500">Email</p>
-                <p class="font-semibold">support@socialneuron.ai</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 p-4">
-                <p class="text-xs font-bold uppercase text-slate-500">Office hours</p>
-                <p class="font-semibold">Mon - Fri, 9:00 AM - 6:00 PM IST</p>
-            </div>
+    </section>
+
+    <section class="grid lg:grid-cols-3 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">FAQ</p>
+            <h3 class="text-xl font-black mt-2">Can I use more than LinkedIn?</h3>
+            <p class="text-sm text-slate-300 mt-3">Yes. The system now accepts platform and content type, so you can plan reels, posts, stories, and more.</p>
         </div>
-        <a href="{% url 'signup' %}" class="mt-6 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5 py-3 rounded-xl">Start a project</a>
-    </div>
-</section>
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">FAQ</p>
+            <h3 class="text-xl font-black mt-2">How does review work?</h3>
+            <p class="text-sm text-slate-300 mt-3">Drafts flow into the review queue first, then published items require manual verification or a live link.</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-indigo-200">FAQ</p>
+            <h3 class="text-xl font-black mt-2">Is contact saved somewhere?</h3>
+            <p class="text-sm text-slate-300 mt-3">Yes. Each submission is stored as an inquiry so you can review it later from the admin side.</p>
+        </div>
+    </section>
+
+    <section class="grid md:grid-cols-4 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <p class="text-3xl font-black">100%</p>
+            <p class="text-xs text-slate-300 mt-1">Scoped by user</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <p class="text-3xl font-black">Multi</p>
+            <p class="text-xs text-slate-300 mt-1">Platform planning</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <p class="text-3xl font-black">AI</p>
+            <p class="text-xs text-slate-300 mt-1">Topic generation</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <p class="text-3xl font-black">Ops</p>
+            <p class="text-xs text-slate-300 mt-1">Review workflow</p>
+        </div>
+    </section>
+</div>
 {% endblock %}
