@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}AI Prompt Settings{% endblock %}
+{% block page_title %}AI Prompt Settings{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-7 text-white shadow-2xl">
+        <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl"></div>
+        <div class="pointer-events-none absolute bottom-0 left-20 h-40 w-40 rounded-full bg-indigo-500/20 blur-2xl"></div>
+        <div class="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+                <p class="mb-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-bold text-cyan-100">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Admin Prompt Studio
+                </p>
+                <h1 class="text-3xl font-black tracking-tight">Control AI prompts from the dashboard</h1>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+                    These templates power topic ideas, draft generation, review cleanup, and advanced post actions.
+                    If a prompt is inactive, missing, or invalid, the app safely falls back to the built-in recommended prompt.
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="rounded-2xl border border-white/10 bg-white/10 px-5 py-4">
+                    <p class="text-3xl font-black">{{ active_count }}</p>
+                    <p class="text-xs font-bold uppercase tracking-wide text-slate-300">Active</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/10 px-5 py-4">
+                    <p class="text-3xl font-black">{{ total_count }}</p>
+                    <p class="text-xs font-bold uppercase tracking-wide text-slate-300">Prompt Keys</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+        <div class="flex gap-3">
+            <i class="fa-solid fa-circle-info mt-0.5 text-amber-500"></i>
+            <div>
+                <p class="font-black">Placeholder rules</p>
+                <p class="mt-1 leading-6">
+                    You can use placeholders like
+                    <span class="font-mono text-xs">{topic}</span>,
+                    <span class="font-mono text-xs">{platform}</span>,
+                    <span class="font-mono text-xs">{post_type}</span>,
+                    <span class="font-mono text-xs">{tone}</span>,
+                    <span class="font-mono text-xs">{audience}</span>,
+                    <span class="font-mono text-xs">{count}</span>,
+                    <span class="font-mono text-xs">{category}</span>,
+                    <span class="font-mono text-xs">{voice_context}</span>,
+                    <span class="font-mono text-xs">{research_data}</span>,
+                    <span class="font-mono text-xs">{draft_content}</span>,
+                    and <span class="font-mono text-xs">{generated_content}</span>.
+                    Unknown placeholders are kept safely, but broken braces are blocked before saving.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+        {% for prompt in prompt_cards %}
+        <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+            <div class="flex flex-col gap-4 border-b border-gray-100 bg-gray-50/70 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="text-lg font-black text-gray-900">{{ prompt.label }}</h2>
+                        <span class="rounded-full bg-slate-900 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">{{ prompt.key }}</span>
+                        {% if prompt.exists %}
+                        <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">Database</span>
+                        {% else %}
+                        <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-700">Fallback Only</span>
+                        {% endif %}
+                        {% if prompt.is_active %}
+                        <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-indigo-700">Active</span>
+                        {% else %}
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-gray-500">Inactive</span>
+                        {% endif %}
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">{{ prompt.description }}</p>
+                    {% if prompt.updated_at %}
+                    <p class="mt-1 text-xs font-semibold text-gray-400">Last updated {{ prompt.updated_at|date:"M d, Y H:i" }}</p>
+                    {% endif %}
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reset_prompt">
+                    <input type="hidden" name="key" value="{{ prompt.key }}">
+                    <button type="submit" class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Reset Recommended
+                    </button>
+                </form>
+            </div>
+
+            <form method="post" class="space-y-5 p-6">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="save_prompt">
+                <input type="hidden" name="key" value="{{ prompt.key }}">
+
+                <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                    <label class="space-y-2">
+                        <span class="text-xs font-black uppercase tracking-wide text-gray-500">Prompt Name</span>
+                        <input type="text" name="name" value="{{ prompt.name }}" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                    </label>
+                    <label class="space-y-2 lg:col-span-2">
+                        <span class="text-xs font-black uppercase tracking-wide text-gray-500">Description</span>
+                        <input type="text" name="description" value="{{ prompt.description }}" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                    </label>
+                </div>
+
+                <label class="block space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wide text-gray-500">Prompt Template</span>
+                    <textarea name="template" rows="12" class="w-full rounded-2xl border border-gray-200 bg-slate-950 px-4 py-4 font-mono text-sm leading-6 text-slate-100 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">{{ prompt.template }}</textarea>
+                </label>
+
+                <div class="flex flex-col gap-4 border-t border-gray-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <label class="inline-flex items-center gap-3 text-sm font-bold text-gray-700">
+                        <input type="checkbox" name="is_active" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" {% if prompt.is_active %}checked{% endif %}>
+                        Use this database prompt
+                    </label>
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Prompt
+                    </button>
+                </div>
+            </form>
+        </section>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

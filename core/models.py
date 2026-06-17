@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 class BrandVoice(models.Model):
@@ -46,6 +47,56 @@ class ContactInquiry(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.subject}"
+
+
+class PromptTemplate(models.Model):
+    """Admin-managed AI prompt with safe code fallbacks."""
+
+    PROMPT_KEYS = [
+        ("topic_ideas", "Topic Ideas"),
+        ("draft_research", "Draft Research Agent"),
+        ("draft_writer", "Draft Writer Agent"),
+        ("draft_review", "Draft Review Agent"),
+        ("advanced_hashtag", "Advanced Hashtag Tool"),
+        ("advanced_hook", "Advanced Hook Tool"),
+        ("advanced_rewrite", "Advanced Rewrite Tool"),
+    ]
+
+    key = models.CharField(
+        max_length=80,
+        choices=PROMPT_KEYS,
+        unique=True,
+        help_text="Stable key used by the application. Keep one active template per key.",
+    )
+    name = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    template = models.TextField(
+        help_text=(
+            "Use Python format placeholders such as {topic}, {platform}, {tone}, "
+            "{audience}, {count}, {post_type}, {category}, {voice_context}, "
+            "{research_data}, {draft_content}, and {generated_content}."
+        )
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["key"]
+
+    def __str__(self):
+        status = "active" if self.is_active else "inactive"
+        return f"{self.name} ({self.key}, {status})"
+
+    def clean(self):
+        super().clean()
+        try:
+            from core.services.prompt_templates import validate_template_syntax
+
+            validate_template_syntax(self.template)
+        except ValueError as exc:
+            raise ValidationError({"template": f"Prompt template has invalid placeholder syntax: {exc}"}) from exc
+
 
 class PostSchedule(models.Model):
     STATUS_CHOICES = [

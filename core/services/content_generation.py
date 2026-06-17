@@ -2,6 +2,7 @@ import random
 import re
 
 from .ai_client import ask_ollama
+from .prompt_templates import render_prompt
 
 
 def _strip_markdown(text: str) -> str:
@@ -25,11 +26,19 @@ def generate_topic_ideas(query, tone, audience, platform=None, post_type=None, n
     content_type_context = f" Content type: {post_type}." if post_type else ""
     niche_context = f" Niche: {niche}." if niche else ""
     goal_context = f" Goals: {', '.join(goals) if isinstance(goals, (list, tuple)) else goals}." if goals else ""
-    prompt = (
-        f"Provide {count} high-converting content topic ideas about: '{query}'. "
-        f"Audience: {audience}. Tone: {tone}.{platform_context}{content_type_context}{niche_context}{goal_context}{voice_context} "
-        "Make the ideas platform- and content-type-specific and avoid generic suggestions. "
-        "Return only one topic per line as bullet points. Do not include an intro or explanation."
+    prompt = render_prompt(
+        "topic_ideas",
+        count=count,
+        query=query,
+        audience=audience,
+        tone=tone,
+        platform=platform or "",
+        post_type=post_type or "",
+        platform_context=platform_context,
+        content_type_context=content_type_context,
+        niche_context=niche_context,
+        goal_context=goal_context,
+        voice_context=voice_context,
     )
     topics_text = ask_ollama(prompt)
 
@@ -87,25 +96,38 @@ def create_post_content(post, brand_voices, brand_voice=None):
             f"Content rules: {', '.join(brand_voice.get('content_rules', []))}."
         )
 
-    research_prompt = (
-        f"Act as a professional Trend Research Agent for {post.category}. "
-        f"Topic: {post.topic}. List 3 current trending angles."
+    post_type = getattr(post, "post_type", "post") or "post"
+    research_prompt = render_prompt(
+        "draft_research",
+        category=post.category,
+        topic=post.topic,
+        platform=post.platform,
+        post_type=post_type,
+        tone=post.tone or "Professional",
+        voice_context=voice_context,
     )
     research_data = ask_ollama(research_prompt)
 
-    writer_prompt = (
-        f"Act as an expert Content Writer. Platform: {post.platform}. Category: {post.category}. "
-        f"Topic: {post.topic}. {voice_context} Research context: {research_data}. "
-        f"Tone: {post.tone or 'Professional'}. Write a highly engaging LinkedIn post. "
-        "Include a strong hook, useful body, and short CTA. Keep it ready for review."
+    writer_prompt = render_prompt(
+        "draft_writer",
+        platform=post.platform,
+        category=post.category,
+        post_type=post_type,
+        topic=post.topic,
+        voice_context=voice_context,
+        research_data=research_data,
+        tone=post.tone or "Professional",
     )
     draft_content = ask_ollama(writer_prompt)
 
-    review_prompt = (
-        "Act as a Review & Optimization Agent. Fix grammar, improve readability, "
-        f"optimize for {post.platform}."
-        f"\n\nDraft:\n{draft_content}\n\n"
-        "Return ONLY the optimized final post. Do not add markdown emphasis or divider lines."
+    review_prompt = render_prompt(
+        "draft_review",
+        platform=post.platform,
+        category=post.category,
+        post_type=post_type,
+        topic=post.topic,
+        draft_content=draft_content,
+        tone=post.tone or "Professional",
     )
     final_content = ask_ollama(review_prompt).strip()
     return _strip_markdown(final_content)

@@ -133,6 +133,15 @@
                 <i class="fa-solid fa-rocket w-4 text-center text-purple-400"></i>
                 <span>Published History</span>
             </a>
+
+            {% if request.session.is_staff %}
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mt-5 mb-2">Admin</p>
+            <a href="{% url 'prompt_settings' %}" id="nav-prompts"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-wand-magic-sparkles w-4 text-center text-cyan-400"></i>
+                <span>AI Prompts</span>
+            </a>
+            {% endif %}
         </nav>
 
         <!-- Bottom: Cron Button -->
@@ -216,6 +225,7 @@
                 '/email-integration': 'nav-email',
                 '/review': 'nav-review',
                 '/history': 'nav-history',
+                '/dashboard/prompts': 'nav-prompts',
             };
             for (const [prefix, id] of Object.entries(map)) {
                 if (path === prefix || (prefix !== '/' && path.startsWith(prefix))) {

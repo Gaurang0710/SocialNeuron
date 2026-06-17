@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import BrandVoice, ContentItem, ContactInquiry, EmailRecipient, PlatformIntegration, PostSchedule
+from .models import (
+    BrandVoice,
+    ContentItem,
+    ContactInquiry,
+    EmailRecipient,
+    PlatformIntegration,
+    PostSchedule,
+    PromptTemplate,
+)
 
 
 admin.site.site_header = "SocialNEURON Administration"
@@ -45,3 +53,28 @@ class ContactInquiryAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'company', 'subject', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('name', 'email', 'company', 'subject', 'message')
+
+
+@admin.register(PromptTemplate)
+class PromptTemplateAdmin(admin.ModelAdmin):
+    list_display = ('name', 'key', 'is_active', 'updated_at')
+    list_filter = ('key', 'is_active')
+    search_fields = ('name', 'key', 'description', 'template')
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        (None, {
+            'fields': ('key', 'name', 'description', 'is_active')
+        }),
+        ('Prompt', {
+            'fields': ('template',),
+            'description': (
+                'Available placeholders include {topic}, {query}, {platform}, {post_type}, '
+                '{tone}, {audience}, {count}, {category}, {voice_context}, '
+                '{platform_context}, {content_type_context}, {niche_context}, '
+                '{goal_context}, {research_data}, {draft_content}, and {generated_content}.'
+            ),
+        }),
+        ('Audit', {
+            'fields': ('created_at', 'updated_at'),
+        }),
+    )

@@ -22,8 +22,9 @@ from auth.auth_service import (
     reset_password,
     send_password_reset_email,
 )
-from core.models import ContactInquiry, EmailRecipient, PostComment, PostSchedule
+from core.models import ContactInquiry, EmailRecipient, PostComment, PostSchedule, PromptTemplate
 from core.services.content_generation import generate_topic_ideas
+from core.services.prompt_templates import get_default_prompt_configs, render_prompt
 from core.services.schedule_import import import_schedule_file
 from core.tasks import generate_post_draft
 from demo.demo_calendar import export_demo_calendar_excel
@@ -35,11 +36,29 @@ def _current_user(request):
     return get_user_by_id(user_id) if user_id else None
 
 
+def _remember_session_user(request, user):
+    request.session["user_id"] = user.id
+    request.session["user_email"] = user.email
+    request.session["is_staff"] = bool(user.is_staff)
+
+
 def _require_user(request):
     user = _current_user(request)
     if user is None:
         messages.error(request, "Please sign in to continue.")
         return None
+    request.session["is_staff"] = bool(user.is_staff)
+    return user
+
+
+def _require_staff_user(request):
+    user = _require_user(request)
+    if user is None:
+        return None
+    if not user.is_staff:
+        messages.error(request, "Only admin users can manage AI prompts.")
+        return None
+    request.session["is_staff"] = True
     return user
 
 
@@ -118,8 +137,7 @@ def signup_view(request):
             messages.error(request, str(exc))
             return render(request, "core/signup.html", {"hide_sidebar": True})
 
-        request.session["user_id"] = user.id
-        request.session["user_email"] = user.email
+        _remember_session_user(request, user)
         messages.success(request, "Signup successful. Complete onboarding next.")
         return redirect("onboarding")
 
@@ -136,8 +154,7 @@ def login_view(request):
             messages.error(request, "Invalid email or password.")
             return render(request, "core/login.html", {"hide_sidebar": True})
 
-        request.session["user_id"] = user.id
-        request.session["user_email"] = user.email
+        _remember_session_user(request, user)
         messages.success(request, "Welcome back.")
         return redirect("dashboard" if get_brand_profile(user.id) else "onboarding")
 
@@ -380,6 +397,89 @@ def dashboard_settings(request):
     )
 
 
+def prompt_settings(request):
+    """Admin-only prompt management dashboard."""
+    user = _require_staff_user(request)
+    if user is None:
+        return redirect("dashboard")
+
+    default_prompts = get_default_prompt_configs()
+    defaults_by_key = {prompt["key"]: prompt for prompt in default_prompts}
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        key = request.POST.get("key", "").strip()
+        if key not in defaults_by_key:
+            messages.error(request, "Unknown prompt key.")
+            return redirect("prompt_settings")
+
+        if action == "reset_prompt":
+            default_prompt = defaults_by_key[key]
+            PromptTemplate.objects.update_or_create(
+                key=key,
+                defaults={
+                    "name": default_prompt["name"],
+                    "description": default_prompt["description"],
+                    "template": default_prompt["template"],
+                    "is_active": True,
+                },
+            )
+            messages.success(request, f"Reset '{default_prompt['name']}' to the recommended prompt.")
+            return redirect("prompt_settings")
+
+        if action == "save_prompt":
+            prompt = PromptTemplate.objects.filter(key=key).first() or PromptTemplate(key=key)
+            prompt.name = request.POST.get("name", "").strip() or defaults_by_key[key]["name"]
+            prompt.description = request.POST.get("description", "").strip()
+            prompt.template = request.POST.get("template", "").strip()
+            prompt.is_active = request.POST.get("is_active") == "on"
+            if not prompt.template:
+                messages.error(request, "Prompt template cannot be empty.")
+                return redirect("prompt_settings")
+            try:
+                prompt.full_clean()
+                prompt.save()
+            except ValidationError as exc:
+                messages.error(request, "Prompt could not be saved: " + "; ".join(exc.messages))
+            else:
+                messages.success(request, f"Saved prompt '{prompt.name}'.")
+            return redirect("prompt_settings")
+
+        messages.error(request, "Unsupported prompt action.")
+        return redirect("prompt_settings")
+
+    existing_prompts = {
+        prompt.key: prompt
+        for prompt in PromptTemplate.objects.filter(key__in=defaults_by_key.keys())
+    }
+    prompt_cards = []
+    for default_prompt in default_prompts:
+        prompt = existing_prompts.get(default_prompt["key"])
+        prompt_cards.append(
+            {
+                "key": default_prompt["key"],
+                "label": default_prompt["name"],
+                "description": prompt.description if prompt else default_prompt["description"],
+                "name": prompt.name if prompt else default_prompt["name"],
+                "template": prompt.template if prompt else default_prompt["template"],
+                "default_template": default_prompt["template"],
+                "is_active": prompt.is_active if prompt else False,
+                "exists": prompt is not None,
+                "updated_at": prompt.updated_at if prompt else None,
+            }
+        )
+
+    return render(
+        request,
+        "core/prompt_settings.html",
+        {
+            "prompt_cards": prompt_cards,
+            "active_count": PromptTemplate.objects.filter(is_active=True).count(),
+            "total_count": len(default_prompts),
+        },
+    )
+
+
 def generate_topics_view(request):
     """Generate user-specific topic ideas."""
     user = _require_user(request)
@@ -438,7 +538,7 @@ def generate_topics_view(request):
             "published_count": posts.filter(status="published").count(),
             "profile": profile,
             "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
-            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook", "TikTok"],
+            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook"],
             "post_type_choices": ["Post", "Reel", "Carousel", "Story", "Thread", "Short"],
             "selected_platform": (profile.platforms or ["LinkedIn"])[0],
             "selected_post_type": "Post",
@@ -495,7 +595,7 @@ def manual_topic_view(request):
         {
             "profile": profile,
             "next_day": (timezone.localdate() + timedelta(days=1)).isoformat(),
-            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook", "TikTok"],
+            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook"],
             "post_type_choices": ["Post", "Reel", "Carousel", "Story", "Thread", "Short"],
         },
     )
@@ -790,11 +890,19 @@ def advanced_ai_action(request, post_id, tool):
         return JsonResponse({"result": "Authentication required."}, status=401)
 
     post = get_object_or_404(PostSchedule, id=post_id, user_id=user.id)
-    prompts = {
-        "hashtag": f"Suggest 8 LinkedIn hashtags for this topic: {post.topic}",
-        "hook": f"Write 5 stronger LinkedIn hooks for this post topic: {post.topic}",
-        "rewrite": f"Rewrite this LinkedIn post in a sharper professional tone:\n\n{post.generated_content}",
+    prompt_keys = {
+        "hashtag": "advanced_hashtag",
+        "hook": "advanced_hook",
+        "rewrite": "advanced_rewrite",
     }
+    prompt = render_prompt(
+        prompt_keys.get(tool, "advanced_rewrite"),
+        topic=post.topic,
+        platform=post.platform,
+        post_type=post.post_type,
+        generated_content=post.generated_content or "",
+        tone=post.tone or "Professional",
+    )
     from .services.ai_client import ask_ollama
 
-    return JsonResponse({"result": ask_ollama(prompts.get(tool, prompts["rewrite"]))})
+    return JsonResponse({"result": ask_ollama(prompt)})
