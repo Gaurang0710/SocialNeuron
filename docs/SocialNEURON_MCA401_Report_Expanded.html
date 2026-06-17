@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SocialNEURON MCA-401 Project Report - Expanded Version</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2.55cm 2cm 2.55cm 3cm;
+        }
+
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 12pt;
+            line-height: 1.5; /* Updated for more page volume */
+            color: #111827;
+            text-align: justify;
+        }
+
+        h1 {
+            font-size: 20pt;
+            text-align: center;
+            margin: 24pt 0 18pt;
+            page-break-before: always;
+        }
+
+        h2 {
+            font-size: 16pt;
+            text-align: left;
+            margin: 24pt 0 12pt;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4pt;
+        }
+
+        h3 {
+            font-size: 14pt;
+            margin: 18pt 0 8pt;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 0 0 12pt;
+        }
+
+        ul, ol {
+            margin: 0 0 12pt;
+            padding-left: 24pt;
+        }
+
+        li {
+            margin-bottom: 6pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0 18pt;
+            font-size: 11pt;
+        }
+
+        th, td {
+            border: 1px solid #1f2937;
+            padding: 8pt;
+            vertical-align: top;
+        }
+
+        th {
+            font-weight: bold;
+            background: #f3f4f6;
+        }
+
+        .cover {
+            page-break-after: always;
+            text-align: center;
+            padding-top: 48pt;
+        }
+
+        .cover h1 {
+            page-break-before: auto;
+            font-size: 24pt;
+            margin-bottom: 36pt;
+        }
+
+        .subtitle {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 12pt 0;
+        }
+
+        .placeholder {
+            color: #374151;
+            font-style: italic;
+        }
+
+        .code {
+            font-family: "Courier New", monospace;
+            font-size: 10pt;
+            background: #f1f5f9;
+            padding: 2pt 4pt;
+            border-radius: 4pt;
+        }
+
+        pre.code {
+            display: block;
+            padding: 12pt;
+            margin: 12pt 0;
+            white-space: pre-wrap;
+            border-left: 4pt solid #3b82f6;
+        }
+
+        .graph-prompt {
+            border: 1px dashed #4b5563;
+            padding: 12pt;
+            margin: 12pt 0 18pt;
+            background: #f9fafb;
+            font-size: 11pt;
+            text-align: center;
+        }
+
+        .caption {
+            text-align: center;
+            font-size: 11pt;
+            font-weight: bold;
+            margin-top: 6pt;
+            margin-bottom: 24pt;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+    <section class="cover">
+        <h1>A Project Report on<br>SocialNEURON: AI Social Media Content Automation Platform</h1>
+        <p class="subtitle">In fulfillment of the requirement for the 4th Semester of</p>
+        <p class="subtitle">Master of Computer Application Programme</p>
+        <p>Course Code: MCA-401</p>
+        <p>Course Name: Software Development Project</p>
+        <p>Academic Year / Session: <span class="placeholder">[Enter Academic Year / Session]</span></p>
+        <br><br>
+        <p>Submitted by</p>
+        <p><strong><span class="placeholder">[Name of the Learner]</span></strong></p>
+        <p>Enrollment No.: <span class="placeholder">[Enter Enrollment Number]</span></p>
+        <br><br>
+        <p>Under the Guidance of</p>
+        <p><strong><span class="placeholder">[Name of the Project Guide]</span></strong></p>
+        <p>Learner Support Centre: <span class="placeholder">[Name of Learner Support Centre]</span></p>
+        <p>Location: <span class="placeholder">[Location]</span></p>
+        <br><br>
+        <p>Dr. Babasaheb Ambedkar Open University</p>
+    </section>
+
+    <!-- Detailed Contents Page -->
+    <section>
+        <h1>Table of Contents</h1>
+        <table>
+            <tr><th>Chapter / Section</th><th>Title</th><th>Page No.</th></tr>
+            <tr><td>Certificate</td><td>Certificate of Originality from the Guide</td><td></td></tr>
+            <tr><td>Acknowledgement</td><td>Acknowledgement</td><td></td></tr>
+            <tr><td>Declaration</td><td>Declaration</td><td></td></tr>
+            <tr><td>Synopsis</td><td>Project Proposal / Synopsis</td><td></td></tr>
+            <tr><td>Chapter 1</td><td>Introduction</td><td></td></tr>
+            <tr><td>1.1</td><td>Brief Idea About the Project</td><td></td></tr>
+            <tr><td>1.2</td><td>Objective of the Project</td><td></td></tr>
+            <tr><td>1.3</td><td>Scope of the Project</td><td></td></tr>
+            <tr><td>1.4</td><td>Existing System</td><td></td></tr>
+            <tr><td>1.5</td><td>Proposed System</td><td></td></tr>
+            <tr><td>1.6</td><td>Platform Used: Hardware and Software</td><td></td></tr>
+            <tr><td>1.7</td><td>Project Location</td><td></td></tr>
+            <tr><td>Chapter 2</td><td>Requirement Analysis</td><td></td></tr>
+            <tr><td>2.1</td><td>Introduction</td><td></td></tr>
+            <tr><td>2.2</td><td>Tools Used for Requirement Gathering</td><td></td></tr>
+            <tr><td>2.3</td><td>Functional Requirements</td><td></td></tr>
+            <tr><td>2.4</td><td>Non-Functional Requirements</td><td></td></tr>
+            <tr><td>2.5</td><td>User Personas</td><td></td></tr>
+            <tr><td>2.6</td><td>Problems in Existing System</td><td></td></tr>
+            <tr><td>2.7</td><td>Conclusion</td><td></td></tr>
+            <tr><td>Chapter 3</td><td>Logical Design</td><td></td></tr>
+            <tr><td>3.1</td><td>Introduction</td><td></td></tr>
+            <tr><td>3.2</td><td>Data Flow Diagram (0th, 1st, 2nd Level)</td><td></td></tr>
+            <tr><td>3.3</td><td>ER Diagram & Data Dictionary</td><td></td></tr>
+            <tr><td>3.4</td><td>Use Case Diagram & Descriptions</td><td></td></tr>
+            <tr><td>3.5</td><td>Activity Diagram</td><td></td></tr>
+            <tr><td>3.6</td><td>Conclusion</td><td></td></tr>
+            <tr><td>Chapter 4</td><td>Physical Design</td><td></td></tr>
+            <tr><td>4.1</td><td>Introduction</td><td></td></tr>
+            <tr><td>4.2</td><td>Database Design (Normalization)</td><td></td></tr>
+            <tr><td>4.3</td><td>Module Design & Logic</td><td></td></tr>
+            <tr><td>4.4</td><td>Input / Output Design</td><td></td></tr>
+            <tr><td>4.5</td><td>Conclusion</td><td></td></tr>
+            <tr><td>Chapter 5</td><td>Implementation</td><td></td></tr>
+            <tr><td>5.1</td><td>Introduction</td><td></td></tr>
+            <tr><td>5.2</td><td>Process Descriptions</td><td></td></tr>
+            <tr><td>5.3</td><td>Core Code Snippets</td><td></td></tr>
+            <tr><td>5.4</td><td>Output and Reports (Screenshots)</td><td></td></tr>
+            <tr><td>5.5</td><td>Conclusion</td><td></td></tr>
+            <tr><td>Chapter 6</td><td>Testing</td><td></td></tr>
+            <tr><td>6.1</td><td>Introduction</td><td></td></tr>
+            <tr><td>6.2</td><td>Types of Testing Performed</td><td></td></tr>
+            <tr><td>6.3</td><td>Detailed Test Cases</td><td></td></tr>
+            <tr><td>6.4</td><td>Conclusion</td><td></td></tr>
+            <tr><td>References</td><td>References and Bibliography</td><td></td></tr>
+            <tr><td>Appendix</td><td>Additional Diagrams and Supports</td><td></td></tr>
+        </table>
+    </section>
+
+    <!-- Introduction Expansion -->
+    <section>
+        <h1>Chapter 1: Introduction</h1>
+        <h2>1.1 Brief Idea About the Project</h2>
+        <p>In the modern digital era, social media has become the primary battleground for brand visibility, customer engagement, and business growth. However, the sheer volume of content required to stay relevant across multiple platforms—LinkedIn, Instagram, X (Twitter), Facebook, TikTok—poses a significant challenge for small business owners, freelancers, and small content teams. These users often struggle with "blank page syndrome," inconsistent brand voice, and the logistical nightmare of managing content calendars across disconnected tools like spreadsheets, emails, and notes.</p>
+        
+        <p>SocialNEURON is an AI-powered social media content automation platform specifically designed to bridge this gap. It centralizes the entire content lifecycle—from idea generation and topic planning to AI-assisted drafting, multi-stage review, and publication verification. Unlike generic AI chatbots, SocialNEURON leverages a structured "Brand Profile" to ensure that every piece of generated content aligns with the user's specific niche, audience, tone, and goals.</p>
+
+        <p>The platform introduces a systematic workflow where users first establish their brand identity. They can then either generate creative topic ideas using AI or upload their existing content schedule in bulk. The system automatically processes due dates, generates high-quality drafts, and routes them through a review dashboard. This ensures that no post goes live without human oversight, yet the heavy lifting of writing and formatting is handled by AI.</p>
+
+        <h2>1.2 Objective of the Project</h2>
+        <p>The primary objectives of the SocialNEURON project are:</p>
+        <ul>
+            <li><strong>Centralized Workflow Management</strong>: To provide a single source of truth for all social media planning activities, eliminating the need for fragmented spreadsheets and notes.</li>
+            <li><strong>AI-Driven Ideation</strong>: To implement an intelligent topic generator that uses niche-specific context to provide creative content ideas, helping users overcome creative blocks.</li>
+            <li><strong>Consistent Brand Voice</strong>: To develop a system that stores and applies brand parameters (tone, audience, goals) to AI prompts, ensuring a professional and uniform output across all content.</li>
+            <li><strong>Streamlined Approval Process</strong>: To create a dedicated Review Center where drafts can be approved, rejected, or regenerated with revision notes, ensuring quality control.</li>
+            <li><strong>Bulk Data Handling</strong>: To support high-volume content operations through Excel and CSV import capabilities, allowing users to schedule weeks of content in minutes.</li>
+            <li><strong>Automated Notifications</strong>: To integrate email alerts that notify stakeholders when new content is ready for review, reducing operational delays.</li>
+            <li><strong>Publication Verification</strong>: To maintain a verifiable history of published content by requiring live links for "Published" status, providing accountability and performance tracking.</li>
+        </ul>
+
+        <h2>1.3 Scope of the Project</h2>
+        <p>The scope of SocialNEURON encompasses the technical and operational requirements of a comprehensive content management system. Key focus areas include:</p>
+        <ul>
+            <li><strong>Authentication & Security</strong>: Robust user registration, encrypted login, and secure password reset mechanisms using Django's security framework.</li>
+            <li><strong>Onboarding & Personalization</strong>: A multi-step onboarding process to capture meticulous brand details that serve as the foundation for the AI's "context window."</li>
+            <li><strong>Multi-Platform Support</strong>: Tailoring content generation for diverse platforms including LinkedIn (professional), Instagram (visual/engaging), X (concise), and more.</li>
+            <li><strong>Content Diversity</strong>: Handling various content formats such as long-form posts, short snippets, carousel outlines, and video/reel scripts.</li>
+            <li><strong>Core Automation Engine</strong>: A background processing system powered by Celery and Redis to handle the intensive AI generation tasks without blocking the user interface.</li>
+            <li><strong>Administrative Controls</strong>: A backend administration panel for managing system-wide records, user inquiries, and configuration settings.</li>
+        </ul>
+        <p>While the current scope focuses on content planning and generation, future versions may include direct API integrations for auto-posting, advanced sentiment analysis of audience comments, and multi-user team roles with granular permissions.</p>
+
+        <h2>1.4 Existing System</h2>
+        <p>Currently, many organizations and creators manage their social media operations using a "patchwork" of tools:</p>
+        <ul>
+            <li><strong>Spreadsheets (Excel/Google Sheets)</strong>: Used for scheduling dates and tracking status, but lacks automation and requires manual copying of content.</li>
+            <li><strong>Generic AI Tools (ChatGPT/Gemini)</strong>: Used for writing, but requires the user to manually re-explain their brand context for every single prompt.</li>
+            <li><strong>Messaging Apps (Slack/WhatsApp)</strong>: Used for reviews and approvals, leading to feedback getting lost in long chat histories.</li>
+            <li><strong>Manual Reminders</strong>: Relying on memory or calendar alerts to remember when to post, which often leads to missed opportunities.</li>
+        </ul>
+        <p>The main drawbacks of this existing system are fragmentation, high manual effort, lack of historical data, and inevitable inconsistencies in brand voice.</p>
+
+        <h2>1.5 Proposed System</h2>
+        <p>SocialNEURON proposes a unified ecosystem that integrates these disconnected steps into a fluid, automated workflow. The proposed system features:</p>
+        <ul>
+            <li><strong>Intelligent Prompt Engineering</strong>: Automatically wrapping user topics in brand context before sending them to the AI, ensuring relevance.</li>
+            <li><strong>State-Driven Workflow</strong>: A clear progression from <em>Draft</em> to <em>Pending Review</em> to <em>Approved</em> to <em>Published</em>.</li>
+            <li><strong>Background Processing</strong>: Using asynchronous workers to generate content, allowing the user to continue working on other tasks while the AI "writes."</li>
+            <li><strong>Integrated Feedback</strong>: A commenting system directly on the post record, keeping all revision notes in context.</li>
+        </ul>
+        <p>By centralizing these functions, SocialNEURON reduces the time spent on content operations by an estimated 60-70%, allowing creators to focus on high-level strategy rather than repetitive drafting.</p>
+
+        <h2>1.6 Platform Used: Hardware and Software</h2>
+        <table>
+            <tr><th>Requirement Type</th><th>Specification</th><th>Reasoning</th></tr>
+            <tr><td>Programming Language</td><td>Python 3.10+</td><td>Strong AI libraries and readable syntax.</td></tr>
+            <tr><td>Framework</td><td>Django 5.2</td><td>"Batteries-included" framework for rapid, secure development.</td></tr>
+            <tr><td>Frontend</td><td>Tailwind CSS & HTMX</td><td>Modern, responsive styling and dynamic "SPA-like" behavior without heavy JS frameworks.</td></tr>
+            <tr><td>Database</td><td>SQLite (Dev), PostgreSQL (Prod)</td><td>Lightweight for development, robust for production.</td></tr>
+            <tr><td>Background Tasks</td><td>Celery & Redis</td><td>Reliable handling of long-running AI requests.</td></tr>
+            <tr><td>AI Model</td><td>Ollama (Llama 3 / Mistral)</td><td>Local AI integration for privacy and cost-efficiency.</td></tr>
+            <tr><td>Hardware (Dev)</td><td>8GB RAM, Quad-core CPU</td><td>Required to run local AI models smoothly.</td></tr>
+        </table>
+
+        <h2>1.7 Project Location</h2>
+        <p>The project is developed within a dedicated Linux workspace. The directory structure follows standard Django conventions, with separate containers for static files, media uploads, and environmental configurations. This structure ensures that the application is "deployment-ready" for platforms such as Heroku, AWS, or DigitalOcean.</p>
+    </section>
+
+    <!-- Requirement Analysis Expansion -->
+    <section>
+        <h1>Chapter 2: Requirement Analysis</h1>
+        <h2>2.1 Introduction</h2>
+        <p>Requirement analysis is the process of determining user expectations for a new or modified product. For SocialNEURON, the analysis focused on the typical bottlenecks in the content creation pipeline: creative fatigue, approval delays, and scheduling errors. The requirements were categorized into functional (what the system does) and non-functional (how the system performs).</p>
+
+        <h2>2.2 Tools Used for Requirement Gathering</h2>
+        <p>A multi-faceted approach was used to ensure comprehensive requirement coverage:</p>
+        <ul>
+            <li><strong>Workflow Shadowing</strong>: Observing the manual steps involved in planning a week's worth of LinkedIn and Instagram content.</li>
+            <li><strong>Competitive Analysis</strong>: Reviewing existing tools like Buffer, Hootsuite, and Jasper to identify gaps in "on-premise" or "personal" AI automation.</li>
+            <li><strong>Technical Feasibility Studay</strong>: Testing the response times and quality of local AI models (Ollama) to set realistic system expectations.</li>
+            <li><strong>Prototyping</strong>: Creating wireframes of the Dashboard and Review Center to validate the user journey.</li>
+        </ul>
+
+        <h2>2.3 Functional Requirements (Expanded)</h2>
+        <table>
+            <tr><th>ID</th><th>Requirement Name</th><th>Detailed Description</th></tr>
+            <tr><td>FR-01</td><td>Secure Authentication</td><td>Users must register with email verification and login with session management. Support for "Forgot Password" via email tokens is mandatory.</td></tr>
+            <tr><td>FR-02</td><td>Brand Profile Setup</td><td>A mandatory onboarding flow must collect: Brand Name, Niche (e.g., Tech), Audience (e.g., Developers), Primary Platforms, Tone (e.g., Witty), and Goals.</td></tr>
+            <tr><td>FR-03</td><td>AI Topic Generator</td><td>The system must provide an interface to input a "seed query" and return 5-10 structured topic ideas with scores.</td></tr>
+            <tr><td>FR-04</td><td>Bulk Schedule Import</td><td>Users must be able to upload a .xlsx or .csv file. The system must parse these files and create 'Draft' post records for each row.</td></tr>
+            <tr><td>FR-05</td><td>Automated Drafting</td><td>A background process (Cron/Celery) must identify posts due within the next 48 hours and trigger the AI content generation service.</td></tr>
+            <tr><td>FR-06</td><td>Review Workflow</td><td>The Review Center must allow users to: 1. Preview content 2. Edit content 3. Approve 4. Reject 5. Add internal comments.</td></tr>
+            <tr><td>FR-07</td><td>Notification System</td><td>Automated emails should be sent to a configurable list of "Reviewers" when content status changes to 'Pending Review'.</td></tr>
+            <tr><td>FR-08</td><td>Publication Tracking</td><td>Users must manually mark a post as 'Published' and provide a valid URL for verification. The system should store this in history.</td></tr>
+            <tr><td>FR-09</td><td>Analytics Dashboard</td><td>Display real-time metrics: Total Posts, Content Mix (Platform-wise), Recent Activity, and Onboarding Status.</td></tr>
+            <tr><td>FR-10</td><td>Public Contact Form</td><td>The landing page must include a "Contact Us" form that stores inquiries in the database for admin review.</td></tr>
+        </table>
+
+        <h2>3.4 Use Case Diagram & Descriptions</h2>
+        <p>The Use Case diagram illustrates the functionality of the system from the perspective of different actors (User, Admin, AI Service).</p>
+        <div class="graph-prompt">
+            <strong>Figure 3.5: Use Case Diagram</strong>
+        </div>
+        
+        <h3>3.4.1 Detailed Use Case Descriptions</h3>
+        <table>
+            <tr><th>Use Case ID</th><th>Use Case Name</th><th>Primary Actor</th><th>Description</th></tr>
+            <tr><td>UC-01</td><td>User Registration</td><td>Visitor</td><td>Allows new users to create an account by providing email and password.</td></tr>
+            <tr><td>UC-02</td><td>Complete Onboarding</td><td>Registered User</td><td>Captures brand niche, audience, and tone to personalize AI content.</td></tr>
+            <tr><td>UC-03</td><td>Generate Topics</td><td>Registered User</td><td>Sends search query to AI and displays 10 creative content ideas.</td></tr>
+            <tr><td>UC-04</td><td>Upload Schedule</td><td>Registered User</td><td>Parses Excel/CSV file and adds rows to the drafting queue.</td></tr>
+            <tr><td>UC-05</td><td>Generate AI Draft</td><td>AI Service</td><td>Automatically writes post content based on brand voice and topic.</td></tr>
+            <tr><td>UC-06</td><td>Review & Approve</td><td>Registered User</td><td>User verifies the AI output and moves it to 'Approved' status.</td></tr>
+            <tr><td>UC-07</td><td>Verify Publication</td><td>Registered User</td><td>User enters a live link to mark the content as successfully published.</td></tr>
+        </table>
+
+        <h2>2.4 Non-Functional Requirements</h2>
+        <p>These requirements ensure the system is professional, reliable, and secure:</p>
+        <ul>
+            <li><strong>Usability</strong>: The UI must be intuitive enough for non-technical users to navigate without a manual. High-contrast typography and clear CTA buttons are required.</li>
+            <li><strong>Performance</strong>: Topic generation should return results within 10 seconds. Dashboard pages should load in less than 2 seconds.</li>
+            <li><strong>Security</strong>: Protection against SQL Injection, XSS, and CSRF must be implemented via Django's middleware. All user data must be scoped to the individual owner.</li>
+            <li><strong>Reliability</strong>: The AI generation service must handle "model busy" errors gracefully and retry failed tasks using Celery's retry mechanism.</li>
+            <li><strong>Scalability</strong>: The database schema must be normalized to handle thousands of post records per user without performance degradation.</li>
+        </ul>
+
+        <h2>2.5 User Personas</h2>
+        <p>To better understand requirements, three primary personas were identified:</p>
+        <ol>
+            <li><strong>The Solo-Entrepreneur</strong>: Needs to maintain a LinkedIn presence but doesn't have time to write. Focuses on "Topic Generation" and "AI Drafting."</li>
+            <li><strong>The Social Media Agency</strong>: Manages high volumes of content for clients. Focuses on "Bulk Import" and "Review/Approval Workflow" for client feedback.</li>
+            <li><strong>The Marketing Manager</strong>: Focuses on "Dashboard Metrics" and "Publication History" to report to management.</li>
+        </ol>
+
+        <h2>2.6 Problems in Existing System</h2>
+        <p>Manual social media management suffers from <strong>Context Separation</strong>. In existing systems, the <em>knowledge</em> of the brand is in one person's head, the <em>schedule</em> is in a file, and the <em>writing</em> is in an AI chat. This separation leads to "Hallucinations" (AI writing things that don't match the brand) and "Workflow Friction" (copying/pasting content 10 times a day). SocialNEURON solves this by making the brand identity the *core* of the automation engine.</p>
+    </section>
+
+    <!-- More sections would follow here... -->
+</body>
+</html>

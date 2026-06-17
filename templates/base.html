@@ -116,6 +116,12 @@
                 <span>Excel Upload</span>
             </a>
 
+            <a href="{% url 'content_topics' %}" id="nav-content-topics"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
+                <i class="fa-solid fa-list-check w-4 text-center text-orange-400"></i>
+                <span>Content Topics</span>
+            </a>
+
             <a href="{% url 'email_integration' %}" id="nav-email"
                 class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-slate-400 text-sm font-semibold">
                 <i class="fa-solid fa-envelope w-4 text-center text-cyan-400"></i>
@@ -222,6 +228,7 @@
                 '/': 'nav-dashboard',
                 '/topic-generator': 'nav-topics',
                 '/excel-upload': 'nav-upload',
+                '/content-topics': 'nav-content-topics',
                 '/email-integration': 'nav-email',
                 '/review': 'nav-review',
                 '/history': 'nav-history',

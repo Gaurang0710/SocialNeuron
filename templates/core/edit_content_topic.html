@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Edit Content Topic{% endblock %}
+{% block page_title %}Edit Content Topic{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-7 text-white shadow-2xl">
+        <div class="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl"></div>
+        <div class="relative z-10">
+            <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-200">Content Topic</p>
+            <h1 class="mt-2 text-3xl font-black">Edit scheduled topic</h1>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+                Update topic metadata, platform, content type, audience, tone, priority, and posting time.
+            </p>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Topic Idea</label>
+                <textarea name="title" rows="4" required class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100">{{ post.topic }}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Platform</span>
+                    <select name="platform" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        {% for p in platform_choices %}
+                        <option value="{{ p }}" {% if post.platform == p %}selected{% endif %}>{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Content Type</span>
+                    <select name="post_type" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        {% for t in post_type_choices %}
+                        <option value="{{ t }}" {% if post.post_type == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Audience / Category</span>
+                    <input type="text" name="audience" value="{{ post.category }}" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </label>
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Tone</span>
+                    <input type="text" name="tone" value="{{ post.tone|default:profile.tone }}" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </label>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Schedule Date</span>
+                    <input type="date" name="scheduled_date" value="{{ post.date|date:'Y-m-d' }}" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </label>
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Schedule Time</span>
+                    <input type="time" name="scheduled_time" value="{{ post.date|date:'H:i' }}" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </label>
+                <label>
+                    <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-gray-500">Priority</span>
+                    <select name="priority" class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        {% for priority in priority_choices %}
+                        <option value="{{ priority }}" {% if post.priority == priority %}selected{% endif %}>{{ priority }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+
+            <div class="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm text-amber-900">
+                <strong>Status:</strong> {{ post.status|title }}.
+                Editing this form updates schedule metadata only. Generated content and review notes are preserved.
+            </div>
+
+            <div class="flex flex-col gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <a href="{% url 'content_topics' %}" class="text-sm font-bold text-gray-500 transition hover:text-gray-900">
+                    Back to content topics
+                </a>
+                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

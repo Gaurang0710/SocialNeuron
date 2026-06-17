@@ -6,9 +6,9 @@
 
     <!-- ═══ Back Bar ═══ -->
     <div class="flex items-center justify-between">
-        <a href="{% url 'review_dashboard' %}"
+        <a href="{% url 'content_topics' %}"
             class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-indigo-600 transition">
-            <i class="fa-solid fa-arrow-left text-xs"></i> Back to Review Center
+            <i class="fa-solid fa-arrow-left text-xs"></i> Back to Content topics
         </a>
         <div class="flex items-center gap-2 text-sm text-gray-400">
             <i class="fa-solid fa-calendar text-xs"></i>
@@ -234,7 +234,7 @@
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-500">Platform</span>
                         <span class="font-semibold text-gray-800 flex items-center gap-1.5">
-                            <i class="fa-brands fa-linkedin text-blue-600"></i> {{ post.platform }}
+                            {{ post.platform }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between text-sm">

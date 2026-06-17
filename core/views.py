@@ -5,6 +5,7 @@ from datetime import datetime, time, timedelta
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
@@ -168,7 +169,7 @@ def forgot_password_view(request):
         try:
             reset_url = request.build_absolute_uri("/reset-password/")
             send_password_reset_email(email, reset_url)
-            messages.success(request, "If the email exists, a reset link has been sent.")
+            messages.success(request, "Reset link has been sent.")
             return redirect("login")
         except Exception as exc:
             messages.error(request, str(exc))
@@ -478,6 +479,123 @@ def prompt_settings(request):
             "total_count": len(default_prompts),
         },
     )
+
+
+def content_topics(request):
+    """Paginated list of all content topics for the current user."""
+    user = _require_user(request)
+    if user is None:
+        return redirect("login")
+
+    posts = PostSchedule.objects.filter(user_id=user.id).order_by("-date", "-updated_at")
+    status = request.GET.get("status", "").strip()
+    platform = request.GET.get("platform", "").strip()
+    query = request.GET.get("q", "").strip()
+
+    if status:
+        posts = posts.filter(status=status)
+    if platform:
+        posts = posts.filter(platform=platform)
+    if query:
+        posts = posts.filter(topic__icontains=query)
+
+    paginator = Paginator(posts, 12)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
+
+    user_posts = PostSchedule.objects.filter(user_id=user.id)
+    return render(
+        request,
+        "core/content_topics.html",
+        {
+            "page_obj": page_obj,
+            "topics": page_obj.object_list,
+            "status_choices": PostSchedule.STATUS_CHOICES,
+            "platform_choices": user_posts.order_by("platform").values_list("platform", flat=True).distinct(),
+            "selected_status": status,
+            "selected_platform": platform,
+            "query": query,
+            "querystring": query_params.urlencode(),
+            "total_count": user_posts.count(),
+            "draft_count": user_posts.filter(status="draft").count(),
+            "pending_count": user_posts.filter(status="pending").count(),
+            "published_count": user_posts.filter(status="published").count(),
+        },
+    )
+
+
+def edit_content_topic(request, post_id):
+    """Edit schedule metadata for a user-owned content topic."""
+    user = _require_user(request)
+    if user is None:
+        return redirect("login")
+
+    post = get_object_or_404(PostSchedule, id=post_id, user_id=user.id)
+    profile = _require_profile(request, user)
+    if profile is None:
+        return redirect("onboarding")
+
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        if not title:
+            messages.error(request, "Topic title is required.")
+            return redirect("edit_content_topic", post_id=post.id)
+
+        scheduled_date = request.POST.get("scheduled_date", "").strip()
+        scheduled_time = request.POST.get("scheduled_time", "").strip()
+        try:
+            if scheduled_date:
+                parsed_date = datetime.fromisoformat(scheduled_date)
+                if scheduled_time:
+                    hh, mm = [int(part) for part in scheduled_time.split(":", 1)]
+                    parsed_date = parsed_date.replace(hour=hh, minute=mm, second=0, microsecond=0)
+                scheduled_dt = timezone.make_aware(parsed_date) if timezone.is_naive(parsed_date) else parsed_date
+            else:
+                scheduled_dt = post.date
+        except ValueError:
+            messages.error(request, "Invalid schedule date or time.")
+            return redirect("edit_content_topic", post_id=post.id)
+
+        post.topic = title
+        post.date = scheduled_dt
+        post.platform = request.POST.get("platform") or post.platform or "LinkedIn"
+        post.post_type = request.POST.get("post_type") or post.post_type or "Post"
+        post.category = request.POST.get("audience") or post.category or "General"
+        post.tone = request.POST.get("tone") or post.tone or profile.tone or "Professional"
+        post.priority = request.POST.get("priority") or post.priority or "Medium"
+        post.save(update_fields=["topic", "date", "platform", "post_type", "category", "tone", "priority", "updated_at"])
+        messages.success(request, "Content topic updated.")
+        return redirect("content_topics")
+
+    return render(
+        request,
+        "core/edit_content_topic.html",
+        {
+            "post": post,
+            "profile": profile,
+            "platform_choices": ["LinkedIn", "Instagram", "X", "Facebook"],
+            "post_type_choices": ["Post", "Reel", "Carousel", "Story", "Thread", "Short"],
+            "priority_choices": ["Low", "Medium", "High"],
+        },
+    )
+
+
+def delete_content_topic(request, post_id):
+    """Delete a user-owned content topic."""
+    user = _require_user(request)
+    if user is None:
+        return redirect("login")
+
+    post = get_object_or_404(PostSchedule, id=post_id, user_id=user.id)
+    if request.method != "POST":
+        messages.error(request, "Please confirm deletion from the content topics page.")
+        return redirect("content_topics")
+
+    topic_title = post.topic
+    post.delete()
+    messages.success(request, f"Deleted topic '{topic_title}'.")
+    return redirect("content_topics")
 
 
 def generate_topics_view(request):

@@ -14,8 +14,28 @@ admin.site.site_header = "SocialNEURON Administration"
 admin.site.site_title = "SocialNEURON Admin"
 admin.site.index_title = "Welcome to SocialNEURON Admin Panel"
 
+
+class ReadOnlyOperationalAdmin(admin.ModelAdmin):
+    """Let staff inspect operational/customer data without editing it."""
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def get_readonly_fields(self, request, obj=None):
+        return [field.name for field in self.model._meta.fields]
+
+
 @admin.register(PostSchedule)
-class PostScheduleAdmin(admin.ModelAdmin):
+class PostScheduleAdmin(ReadOnlyOperationalAdmin):
     list_display = ('topic', 'platform', 'category', 'status', 'date', 'priority')
     list_filter = ('status', 'platform', 'category', 'priority')
     search_fields = ('topic', 'generated_content')
@@ -23,33 +43,33 @@ class PostScheduleAdmin(admin.ModelAdmin):
 
 
 @admin.register(ContentItem)
-class ContentItemAdmin(admin.ModelAdmin):
+class ContentItemAdmin(ReadOnlyOperationalAdmin):
     list_display = ('topic', 'platform', 'post_type', 'status', 'created_at')
     list_filter = ('status', 'platform', 'post_type')
     search_fields = ('topic', 'generated_content')
 
 
 @admin.register(BrandVoice)
-class BrandVoiceAdmin(admin.ModelAdmin):
+class BrandVoiceAdmin(ReadOnlyOperationalAdmin):
     list_display = ('name', 'created_at')
     search_fields = ('name', 'document_content')
 
 
 @admin.register(PlatformIntegration)
-class PlatformIntegrationAdmin(admin.ModelAdmin):
+class PlatformIntegrationAdmin(ReadOnlyOperationalAdmin):
     list_display = ('platform', 'setup_email', 'is_active')
     list_filter = ('platform', 'is_active')
 
 
 @admin.register(EmailRecipient)
-class EmailRecipientAdmin(admin.ModelAdmin):
+class EmailRecipientAdmin(ReadOnlyOperationalAdmin):
     list_display = ('email', 'name', 'is_active', 'created_at')
     list_filter = ('is_active',)
     search_fields = ('email', 'name')
 
 
 @admin.register(ContactInquiry)
-class ContactInquiryAdmin(admin.ModelAdmin):
+class ContactInquiryAdmin(ReadOnlyOperationalAdmin):
     list_display = ('name', 'email', 'company', 'subject', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('name', 'email', 'company', 'subject', 'message')
