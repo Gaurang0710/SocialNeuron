@@ -131,7 +131,8 @@
                                 <input type="hidden" name="title" value="{{ t.title }}">
                                 <input type="hidden" name="tone" value="{{ t.tone }}">
                                 <input type="hidden" name="audience" value="{{ t.audience }}">
-                                <input type="hidden" name="post_type" value="post">
+                                <input type="hidden" name="platform" value="{{ selected_platform|default:'LinkedIn' }}">
+                                <input type="hidden" name="post_type" value="{{ selected_post_type|default:'Post' }}">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                                     <input type="date" name="scheduled_date" value="{{ next_day|default:'' }}" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <input type="time" name="scheduled_time" value="09:00" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -160,8 +161,8 @@
         class="mt-5 bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
             <p class="text-white font-bold text-sm">🎯 Happy with these topics?</p>
-            <p class="text-slate-400 text-xs mt-0.5">Send them all to Drafts, then Run Cron to auto-generate LinkedIn
-                posts.</p>
+            <p class="text-slate-400 text-xs mt-0.5">Send them to Drafts, then Run Cron to generate platform-specific
+                content.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
             <a href="{% url 'dashboard' %}"
