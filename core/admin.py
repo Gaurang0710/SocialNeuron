@@ -1,6 +1,11 @@
 from django.contrib import admin
 from .models import BrandVoice, ContentItem, ContactInquiry, EmailRecipient, PlatformIntegration, PostSchedule
 
+
+admin.site.site_header = "SocialNEURON Administration"
+admin.site.site_title = "SocialNEURON Admin"
+admin.site.index_title = "Welcome to SocialNEURON Admin Panel"
+
 @admin.register(PostSchedule)
 class PostScheduleAdmin(admin.ModelAdmin):
     list_display = ('topic', 'platform', 'category', 'status', 'date', 'priority')
